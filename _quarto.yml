@@ -1,0 +1,25 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Bowen Qin"
+  navbar:
+    right:
+      - about.qmd
+      - icon: github
+        href: https://github.com/
+      - icon: twitter
+        href: https://twitter.com
+format:
+  html:
+    theme:
+      light: morph
+      dark: darkly
+    css: styles.css
+    mainfont: "Ma Shan Zheng"
+
+comments:
+  hypothesis: 
+    theme: clean
+

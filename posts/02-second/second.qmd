@@ -1,0 +1,14 @@
+---
+title: "second"
+---
+
+
+历史地理骄傲
+
+```{r}
+library(tidyverse)
+ChickWeight %>% 
+  ggplot(aes(Time, weight, color = Diet)) +
+  geom_point()
+```
+
