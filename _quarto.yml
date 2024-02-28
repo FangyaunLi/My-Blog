@@ -20,6 +20,5 @@ format:
     mainfont: "Ma Shan Zheng"
 
 comments:
-  hypothesis: 
-    theme: clean
-
+  giscus:
+    repo: YOURGITHUBACCOUNT/YOURREPO
