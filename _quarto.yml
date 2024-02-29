@@ -1,9 +1,8 @@
 project:
   type: website
-  output-dir: docs
 
 website:
-  title: "Bowen Qin"
+  title: "Blog"
   navbar:
     right:
       - about.qmd
@@ -13,12 +12,8 @@ website:
         href: https://twitter.com
 format:
   html:
-    theme:
-      light: morph
-      dark: darkly
+    theme: cosmo
     css: styles.css
-    mainfont: "Ma Shan Zheng"
 
-comments:
-  giscus:
-    repo: YOURGITHUBACCOUNT/YOURREPO
+
+

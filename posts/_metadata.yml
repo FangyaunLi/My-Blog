@@ -6,15 +6,3 @@ freeze: true
 
 # Enable banner style title blocks
 title-block-banner: true
-
-knitr: 
-  opts_chunk: 
-    dev: "ragg_png"
-    out.width: "80%"
-    fig.align: "center"
-
-fig-asp: 0.8
-author: "Bowen Qin"
-date: "`r Sys.Date()`"
-
-

@@ -2,7 +2,7 @@
 title: "About"
 image: profile.jpg
 about:
-  template: solana
+  template: jolla
   links:
     - icon: twitter
       text: Twitter
@@ -16,4 +16,4 @@ about:
 
 ---
 
-This blog is under building.
+About this blog
