@@ -15,5 +15,8 @@ format:
     theme: cosmo
     css: styles.css
 
+comments: 
+  giscus: 
+    repo: FangyaunLi/My-Blog
 
 
