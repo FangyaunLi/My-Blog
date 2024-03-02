@@ -3,7 +3,6 @@ title: "second"
 ---
 
 
-历史地理骄傲
 
 ```{r}
 library(tidyverse)

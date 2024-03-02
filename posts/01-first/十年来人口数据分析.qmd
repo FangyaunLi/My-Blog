@@ -1,6 +1,8 @@
 ---
 title: "人口数据"
-draft: true
+categories: [R, data analysis]
+date: "2024-02-29"
+image: cover.png
 ---
 
 文章之前发布在[和鲸社区](https://www.heywhale.com/mw/project/65c31fc4f231de650f6d6175)。
@@ -372,7 +374,7 @@ p_age_1 <- dt_list$dt_age %>%
   geom_line(linewidth = 2) +
   geom_point(size = 4) +
   scale_y_continuous(labels = scales::label_comma()) +
-  labs(y = "人口（万人）")
+  labs(y = "人口（万人）", x = "年份")
 
 
 p_age_2 <- dt_list$dt_age %>% 
@@ -382,7 +384,7 @@ p_age_2 <- dt_list$dt_age %>%
   geom_point(size = 4) +
   #scale_color_discrete(breaks = c("0-14岁", "65岁及以上")) +
   scale_y_continuous(labels = scales::label_percent()) +
-  labs(y = "抚养比")
+  labs(y = "抚养比", x = "年份")
 
 p_age_1 / p_age_2 +
   plot_annotation(title = "2014-2022 年龄结构") +
@@ -502,7 +504,7 @@ dt_gender %>%
   guides(alpha = "none")  +
   theme(legend.position = "bottom", 
         legend.key.width = unit(35, "pt")) +
-  labs(title = "2014-2022 男女年龄分布变化")
+  labs(title = "2014-2022 男女年龄分布变化", x = "年份")
 ```
 
 男性与女性年龄分布的变化与总人口年龄分布的变化一致。
