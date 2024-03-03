@@ -3,6 +3,7 @@ title: "人口数据"
 categories: [R, data analysis]
 date: "2024-02-29"
 image: cover.png
+mainfont: "STFangsong"
 ---
 
 文章之前发布在[和鲸社区](https://www.heywhale.com/mw/project/65c31fc4f231de650f6d6175)。
