@@ -1,0 +1,396 @@
+---
+title: 构造感知机模型
+categories: [R, ML]
+date: "2024-03-05"
+---
+
+构造感知机模型
+
+## PLA
+
+```{r}
+#| label: setup
+#| message: false
+
+library(tidyverse)
+library(plotly)
+theme_set(theme_minimal())
+knitr::opts_chunk$set(
+  out.width = "80%",
+  fig.align = "center",
+  dev = "ragg_png"
+)
+```
+
+
+```{r}
+set.seed(123)
+n = 2000
+df <- tibble(
+  id = 1:n,
+  x1 = rnorm(n),
+  x2 = rnorm(n),
+  y = if_else(2*x1 + 3*x2 >= 0, 1, -1)
+) %>% 
+  arrange(id)
+df
+```
+
+```{r, dev = 'ragg_png'}
+df %>% 
+  ggplot(aes(x1, x2, color = as_factor(y))) +
+  geom_point(alpha = 0.5) +
+  labs(
+    x = latex2exp::TeX("$x_1$"),
+    y = latex2exp::TeX("$x_2$"),
+    color = "y"
+  ) +
+  scale_color_brewer(palette = "Set2")
+```
+
+
+```{r}
+pla_near <- function(df, total_times){
+  errors = 0
+  n = 0
+  w = c(0, 0)
+  ddd = df %>% 
+  mutate(score = pmap_dbl(list(x1, x2), .f = \(x, y) if_else(w %*% c(x, y) >= 0, 1, -1))) %>% 
+  filter(score != y)
+  while(nrow(ddd) > 0 & n < total_times) {
+    # i = sample(1:nrow(ddd), size = 1)
+    # x = c(ddd$x1[[i]], ddd$x2[[i]])
+    # y = ddd$y[[i]]
+    x = c(ddd$x1[[1]], ddd$x2[[1]])
+    y = ddd$y[[1]]
+    w = w + y*x
+    n = n + 1
+    errors[[n]] = nrow(ddd)
+    ddd = df %>% 
+  mutate(score = pmap_dbl(list(x1, x2), .f = \(x, y) if_else(w %*% c(x, y) >= 0, 1, -1))) %>% 
+  filter(y != score)
+  }
+  return(list(w = w, n = n, errors = errors))
+}
+
+pla_random <- function(df, total_times){
+  errors = rep(NA, total_times)
+  n = 0
+  w = c(0, 0)
+  ddd = df %>% 
+  mutate(score = pmap_dbl(list(x1, x2), .f = \(x, y) if_else(w %*% c(x, y) >= 0, 1, -1))) %>% 
+  filter(score != y)
+  while(nrow(ddd) > 0 & n < total_times) {
+    i = sample(1:nrow(ddd), size = 1)
+    x = c(ddd$x1[[i]], ddd$x2[[i]])
+    y = ddd$y[[i]]
+    w = w + y*x
+    n = n + 1
+    errors[[n]] = nrow(ddd)
+    ddd = df %>% 
+  mutate(score = pmap_dbl(list(x1, x2), .f = \(x, y) if_else(w %*% c(x, y) >= 0, 1, -1))) %>% 
+  filter(y != score)
+  }
+  return(list(w = w, n = n, errors = errors))
+}
+```
+
+
+```{r}
+#| cache: true
+
+T_times <- 500
+rrr_near <- pla_near(df, T_times)
+rrr_random <- pla_random(df, T_times)
+df_result <- tibble(
+  n = 1:T_times,
+  near_errors = rrr_near$errors,
+  random_errors = rrr_random$errors
+)
+```
+
+```{r}
+df_result %>% 
+  pivot_longer(
+    cols = -n
+  ) %>% 
+  ggplot(aes(n, value, color = name)) +
+  geom_path(alpha = 0.5)
+```
+
+```{r}
+df %>% 
+  mutate(score_near = pmap_dbl(list(x1, x2), .f = \(x, y) if_else(rrr_near$w %*% c(x, y) >= 0, 1, -1)),
+         score_random = pmap_dbl(list(x1, x2), .f = \(x, y) if_else(rrr_random$w %*% c(x, y) >= 0, 1, -1))) %>% 
+  filter(score_random != y | score_near != y)
+```
+
+```{r}
+f_1 = function(x){
+x * rrr_near$w[[1]] / (-rrr_near$w[[2]])
+}
+
+f_2 = function(x){
+x * rrr_random$w[[1]] / (-rrr_random$w[[2]])
+}
+
+df %>% 
+  ggplot(aes(x1, x2)) +
+  geom_point(aes(color = as_factor(y))) +
+  geom_function(fun = f_1, lty = 2, color = "red") +
+  geom_function(fun = f_2, lty = 2, color = "blue") +
+  labs(color = "y")
+```
+
+
+
+## modify PLA
+
+```{r}
+set.seed(111)
+n = 2000
+df <- tibble(
+  id = 1:n,
+  x1 = rnorm(n),
+  x2 = rnorm(n),
+  e = rnorm(n),
+  y = if_else(2*x1 + 3*x2 + e >= 0, 1, -1)
+) %>% 
+  arrange(id)
+df
+```
+
+```{r}
+df %>% 
+  ggplot(aes(x1, x2, color = as_factor(y))) +
+  geom_point(alpha = 0.5)
+```
+
+
+```{r}
+pla_best <- function(df, total_times){
+  n = 0
+  w = c(0,0)
+  ws = list()
+  errors = nrow(df)
+  while (last(errors) > 0 & n < total_times) {
+    n = n + 1
+    ddd = df %>% 
+    mutate(score = pmap_dbl(list(x1, x2), 
+                            \(x, y) if_else((w %*% c(x, y)) >= 0, 1, -1))) %>% 
+    filter(score != y)
+    i = sample(1:nrow(ddd), size = 1)
+    errors[[n]] = nrow(ddd)
+    x = c(ddd$x1[[i]], ddd$x2[[i]])
+    y = ddd$y[[i]]
+    w = w + y*x
+    ws[[n]] = w
+  }
+  return(list(ws = ws, n = n, errors = errors))
+}
+
+pla_modify <- function(df, total_times, w = c(0, 0)){
+  n = 0
+  #ws = list()
+  errors = nrow(df)
+  while (last(errors) > 0 & n < total_times) {
+    n = n + 1
+    # ddd = df %>% 
+    #   mutate(score = pmap_dbl(list(x1, x2), 
+    #                           \(x, y) if_else((w %*% c(x, y)) >= 0, 1, -1))) %>% 
+    #   filter(score != y)
+    
+    w_list = pmap(df, 
+                  \(x1, x2, y, ...) w + y * c(x1, x2)) %>% 
+      sample(size = min(floor(0.1 * nrow(df)), 100))
+    
+    n_errors = map_dbl(w_list, \(x) sum(pmap_dbl(df, \(x1, x2, ...) sign(c(x1, x2) %*% x)) != df$y))
+    
+    min_errors = min(n_errors)
+    w_list_min_e = w_list[[which.min(n_errors)]]
+    if (min_errors <= last(errors)) {
+      w = w_list_min_e
+      errors[[n]] = min_errors
+    }else{
+      w = w
+      errors[[n]] = last(errors)
+    }
+    if (n>20) {
+      if (errors[[n-20]] == errors[[n]]){
+        break
+      }
+    }
+  }
+  return(list(w = w, n = n, errors = errors))
+}
+```
+
+
+```{r}
+#| cache: true
+
+total_times <-  88
+rrr_best <- pla_best(df, total_times)
+rrr_modify <- pla_modify(df, total_times)
+```
+
+
+```{r}
+df_result <- tibble(
+  n = 1:total_times,
+  errors_modify = c(rrr_modify$errors, rep(NA, total_times - length(rrr_modify$errors))),
+  errors_best = rrr_best$errors
+)
+
+df_result %>% 
+  pivot_longer(-n) %>% 
+  ggplot(aes(n, value, color = name)) +
+  geom_line(linewidth = 1, alpha = 0.5) +
+  geom_point(alpha = 0.5) +
+  coord_cartesian(ylim = c(100, 300))
+```
+
+
+```{r}
+w <- rrr_best$ws[[which.min(rrr_best$errors)]]
+f_3 <- function(x){
+x * w[[1]] / (-w[[2]])
+}
+
+f_4 <- function(x){
+x * rrr_modify$w[[1]] / (-rrr_modify$w[[2]])
+}
+
+df %>% 
+  mutate(score = pmap_dbl(df, \(x1, x2, ...) sign(c(x1, x2) %*% rrr_modify$w)),
+         alpha = if_else(score == y, 0.25, 1)) %>% 
+  ggplot(aes(x1, x2)) +
+  geom_point(aes(color = as_factor(y), alpha = alpha)) +
+  geom_function(fun = f_3, lty = 2, color = "purple") +
+  geom_function(fun = f_4, lty = 2, color = "skyblue") +
+  labs(color = "y") +
+  coord_equal()
+```
+
+```{r}
+w0 <- c(2, 3)
+w0_erors <- df %>% 
+  mutate(score = pmap_dbl(list(x1, x2), 
+                            \(x, y) if_else((w0 %*% c(x, y)) >= 0, 1, -1))) %>% 
+  filter(score != y) %>% 
+  nrow()
+
+pla_best_errors <- min(rrr_best$errors)
+pla_modify_errors <- last(rrr_modify$errors)
+tibble(
+  w0_erors,
+  pla_best_errors,
+  pla_modify_errors
+)
+```
+
+
+## linear regression and modify PLA
+
+```{r}
+pla_modify <- function(df, total_times, w = c(0, 0, 0)){
+  n = 0
+  #ws = list()
+  errors = nrow(df)
+  while (last(errors) > 0 & n < total_times) {
+    n = n + 1
+    # ddd = df %>% 
+    #   mutate(score = pmap_dbl(list(x1, x2), 
+    #                           \(x, y) if_else((w %*% c(x, y)) >= 0, 1, -1))) %>% 
+    #   filter(score != y)
+    
+    w_list = pmap(df, 
+                  \(x1, x2, y, ...) w + y * c(1, x1, x2)) %>% 
+      sample(size = min(floor(0.1 * nrow(df)), 100))
+    
+    n_errors = map_dbl(w_list, \(x) sum(pmap_dbl(df, \(x1, x2, ...) sign(c(1, x1, x2) %*% x)) != df$y))
+    
+    min_errors = min(n_errors)
+    w_list_min_e = w_list[[which.min(n_errors)]]
+    if (min_errors <= last(errors)) {
+      w = w_list_min_e
+      errors[[n]] = min_errors
+    }else{
+      w = w
+      errors[[n]] = last(errors)
+    }
+    if (n>20) {
+      if (errors[[n-20]] == errors[[n]]){
+        break
+      }
+    }
+  }
+  return(list(w = w, n = n, errors = errors))
+}
+
+
+reg_pla <- function(df, formula, total_times){
+  fit <- lm(formula, data = df)
+  pla_modify(df, total_times, w = fit$coefficients)
+}
+```
+
+
+```{r}
+#| cache: true
+
+total_times <-  88
+formula <- formula(y ~ x1 + x2)
+microbenchmark::microbenchmark(
+  rrr_modify_2 <- pla_modify(df, total_times),
+  rrr_reg_pla <- reg_pla(df, formula, total_times),
+  times = 1
+)
+```
+
+
+```{r}
+#| warning: false
+
+df_result <- tibble(
+  n = 1:total_times,
+  errors_modify = c(rrr_modify_2$errors, rep(NA, total_times - length(rrr_modify_2$errors))),
+  errors_reg = c(rrr_reg_pla$errors, rep(NA, total_times - length(rrr_reg_pla$errors)))
+)
+
+df_result %>% 
+  pivot_longer(-n) %>% 
+  ggplot(aes(n, value, color = name)) +
+  geom_line(linewidth = 1, alpha = 0.5) +
+  geom_point(alpha = 0.5) +
+  coord_cartesian(ylim = c(100, 300), xlim = c(0, 50))
+```
+
+```{r}
+f_modify <- function(x){
+rrr_modify_2$w[[1]] + x * rrr_modify$w[[2]] / (-rrr_modify$w[[3]])
+}
+
+f_reg <- function(x){
+rrr_reg_pla$w[[1]] + x * rrr_reg_pla$w[[2]] / (-rrr_reg_pla$w[[3]])
+}
+
+df %>% 
+  mutate(score = pmap_dbl(df, \(x1, x2, ...) sign(c(1, x1, x2) %*% rrr_reg_pla$w)),
+         alpha = if_else(score == y, 0.25, 1)) %>% 
+  ggplot(aes(x1, x2)) +
+  geom_point(aes(color = as_factor(y), alpha = alpha)) +
+  geom_function(fun = f_reg, lty = 2, color = "purple") +
+  geom_function(fun = f_modify, lty = 2, color = "skyblue") +
+  labs(color = "y") +
+  coord_equal()
+```
+
+
+```{r}
+tibble(
+  err_modify = last(rrr_modify_2$errors),
+  err_reg_pla = last(rrr_reg_pla$errors)
+)
+```
+

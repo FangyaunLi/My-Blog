@@ -19,3 +19,6 @@ code-tools: true
     
 author: "Bowen Qin"
 mainfont: "STFangsong"
+monofont: "Cascadia Code"
+code-block-bg: "#a6b2b7"
+dpi: 400
