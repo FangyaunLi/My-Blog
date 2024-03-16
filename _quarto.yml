@@ -13,7 +13,7 @@ website:
 format:
   html:
     theme: 
-      light: solar
+      light: quarze
       dark: darkly
     css: styles.css
 
