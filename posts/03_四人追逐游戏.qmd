@@ -1,0 +1,90 @@
+---
+title: 四人追逐游戏
+categories: [R, coding]
+date: "2024-03-10"
+---
+
+游戏的设定是四个人A，B，C，D站在四个角，A追B，B追C，C追D，D追A。高数里面好像经常有类似的题目，今天用代码来模拟一下。
+
+
+```{r}
+#| label: setup
+#| message: false
+
+library(tidyverse)
+```
+
+```{r}
+dt_list <- list(
+  tibble(
+    name = c("A", "B", "C", "D"),
+    x = c(1, 1, -1, -1),
+    y = c(1, -1, -1, 1),
+    direction = c(2, 3, 4, 1),
+    n = 0
+  )
+)
+```
+
+生成一个`tibble`，其中
+
+-   `name`列表示四个人的名字。
+-   `x`、`y`是坐标。
+-   `direction`列表示追逐的人的行号，比如A追B，B在第二行，所以A对应的`direction`是2。
+-   `n`表示跑了几步，目前没有开始追，所以是0步。
+
+```{r}
+# 设置程序最多跑5000步，防止程序出错而不收敛
+N <- 5000   
+# 设置每一步的步长
+step_length <- 0.01
+
+# 开始循环
+for (i in 1:N) {
+  dt = dt_list[[i]]
+  x_diff = max(dt$x) - min(dt$x)
+  y_diff = max(dt$y) - min(dt$y)
+  # 因为x,y是浮点数，最终可能每个点的x,y都十分接近但不相等，因此用near()来判断
+  if (!all(near(c(x_diff, y_diff), 0))) {
+    dt_list[[i + 1]] <- dt %>% 
+      # 每个人向所追的方向迈一步
+      mutate(x_d = as_vector(dt[direction, "x"] - x),
+             y_d = as_vector(dt[direction, "y"] - y),
+             x = x + x_d * step_length,
+             y = y + y_d * step_length,
+             n = i)
+  } else {
+    break
+  }
+}
+```
+
+整理一下结果
+
+```{r}
+dt <- do.call(bind_rows, dt_list)
+dt
+```
+
+```{r}
+dt %>% 
+  slice_max(n)
+```
+
+达到收敛的状态花了1892步，即在步长为`r step_length`时，1892步后四人追到彼此。
+
+看下四个人的轨迹
+
+```{r}
+dt %>% 
+  ggplot(aes(x, y, color = n, pch = name)) +
+  geom_point(alpha = 0.2, size = 3) +
+  geom_text(data = dt_list[[1]],
+            aes(x, y, label = name),
+            nudge_x = 0.1,
+            nudge_y = 0.1) +
+  coord_equal() +
+  scale_color_viridis_c(option = "C", end = 0.8, begin = 0.4) +
+  theme_minimal()
+```
+
