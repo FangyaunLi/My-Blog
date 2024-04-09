@@ -186,14 +186,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#步骤拆解" id="toc-步骤拆解" class="nav-link active" data-scroll-target="#步骤拆解"><span class="header-section-number">1</span> 步骤拆解</a>
   <ul class="collapse">
-  <li><a href="#step-1-根据formula生成矩阵" id="toc-step-1-根据formula生成矩阵" class="nav-link" data-scroll-target="#step-1-根据formula生成矩阵"><span class="header-section-number">1.0.1</span> step 1: 根据formula生成矩阵</a></li>
-  <li><a href="#step-2-得到回归系数" id="toc-step-2-得到回归系数" class="nav-link" data-scroll-target="#step-2-得到回归系数"><span class="header-section-number">1.0.2</span> step 2: 得到回归系数</a></li>
-  <li><a href="#step-3-求出拟合值和误差" id="toc-step-3-求出拟合值和误差" class="nav-link" data-scroll-target="#step-3-求出拟合值和误差"><span class="header-section-number">1.0.3</span> step 3: 求出拟合值和误差</a></li>
-  <li><a href="#step-4-求出系数的标准误" id="toc-step-4-求出系数的标准误" class="nav-link" data-scroll-target="#step-4-求出系数的标准误"><span class="header-section-number">1.0.4</span> step 4: 求出系数的标准误</a></li>
-  <li><a href="#step-5-系数的t检验" id="toc-step-5-系数的t检验" class="nav-link" data-scroll-target="#step-5-系数的t检验"><span class="header-section-number">1.0.5</span> step 5: 系数的t检验</a></li>
-  <li><a href="#step-6-整理结果" id="toc-step-6-整理结果" class="nav-link" data-scroll-target="#step-6-整理结果"><span class="header-section-number">1.0.6</span> step 6: 整理结果</a></li>
+  <li><a href="#step-1-根据formula生成矩阵" id="toc-step-1-根据formula生成矩阵" class="nav-link" data-scroll-target="#step-1-根据formula生成矩阵">step 1: 根据formula生成矩阵</a></li>
+  <li><a href="#step-2-得到回归系数" id="toc-step-2-得到回归系数" class="nav-link" data-scroll-target="#step-2-得到回归系数">step 2: 得到回归系数</a></li>
+  <li><a href="#step-3-求出拟合值和误差" id="toc-step-3-求出拟合值和误差" class="nav-link" data-scroll-target="#step-3-求出拟合值和误差">step 3: 求出拟合值和误差</a></li>
+  <li><a href="#step-4-求出系数的标准误" id="toc-step-4-求出系数的标准误" class="nav-link" data-scroll-target="#step-4-求出系数的标准误">step 4: 求出系数的标准误</a></li>
+  <li><a href="#step-5-系数的t检验" id="toc-step-5-系数的t检验" class="nav-link" data-scroll-target="#step-5-系数的t检验">step 5: 系数的t检验</a></li>
+  <li><a href="#step-6-整理结果" id="toc-step-6-整理结果" class="nav-link" data-scroll-target="#step-6-整理结果">step 6: 整理结果</a></li>
   </ul></li>
   <li><a href="#打包成一个函数" id="toc-打包成一个函数" class="nav-link" data-scroll-target="#打包成一个函数"><span class="header-section-number">2</span> 打包成一个函数</a></li>
+  <li><a href="#使用真实的数据集" id="toc-使用真实的数据集" class="nav-link" data-scroll-target="#使用真实的数据集"><span class="header-section-number">3</span> 使用真实的数据集</a></li>
   </ul>
 </nav>
     </div>
@@ -210,37 +211,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>准备花几期时间，自己写代码，实现常用的计量方法。</p>
 <p>生成模拟数据</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(x) <span class="ot">&lt;-</span> LETTERS[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">x1 =</span> <span class="fu">runif</span>(<span class="dv">1000</span>, <span class="sc">-</span><span class="dv">10</span>, <span class="dv">10</span>),</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">x2 =</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, <span class="dv">1000</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">x3 =</span> <span class="fu">sample</span>(LETTERS[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="dv">1000</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">error =</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="at">sd =</span> <span class="dv">1000</span>),</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> x1 <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> x2 <span class="sc">+</span> x[x3]</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">111</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(x) <span class="ot">&lt;-</span> LETTERS[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">x1 =</span> <span class="fu">runif</span>(<span class="dv">1000</span>, <span class="sc">-</span><span class="dv">10</span>, <span class="dv">10</span>),</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">x2 =</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, <span class="dv">1000</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">x3 =</span> <span class="fu">sample</span>(LETTERS[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="dv">1000</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">error =</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="at">sd =</span> <span class="dv">1000</span>),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> x1 <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> x2 <span class="sc">+</span> x[x3]</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1,000 × 5
        x1    x2 x3     error     y
     &lt;dbl&gt; &lt;int&gt; &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt;
- 1 -7.41      8 A      -619. 11.2 
- 2  0.525    12 C     -2573. 41.1 
- 3  9.44      5 C      -587. 37.9 
- 4  7.74      1 D      -789. 23.5 
- 5 -8.20      2 C     -1028. -6.40
- 6  0.358    13 C       224. 43.7 
- 7  3.76      3 A      -958. 18.5 
- 8 -3.35     13 B      -877. 35.3 
- 9 -9.83     13 A      -276. 21.3 
-10  3.04     15 C     -1007. 55.1 
+ 1  1.86     11 A      285.  38.7 
+ 2  4.53      5 B      176.  27.1 
+ 3 -2.59     11 A     -610.  29.8 
+ 4  0.298     9 A       92.1 29.6 
+ 5 -2.45     20 D      611.  60.1 
+ 6 -1.63     15 B      170.  44.7 
+ 7 -9.79      6 C     -104.   2.43
+ 8  0.646    18 A     -253.  57.3 
+ 9 -1.36     10 B     -169.  30.3 
+10 -8.13      6 B     -509.   4.75
 # ℹ 990 more rows</code></pre>
 </div>
 </div>
 <section id="步骤拆解" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> 步骤拆解</h1>
-<section id="step-1-根据formula生成矩阵" class="level3" data-number="1.0.1">
-<h3 data-number="1.0.1" class="anchored" data-anchor-id="step-1-根据formula生成矩阵"><span class="header-section-number">1.0.1</span> step 1: 根据formula生成矩阵</h3>
+<section id="step-1-根据formula生成矩阵" class="level3">
+<h3 class="anchored" data-anchor-id="step-1-根据formula生成矩阵">step 1: 根据formula生成矩阵</h3>
 <p>因为<code>formula</code>是R里面一个特殊的<code>class</code>，他的具体机制我没弄清楚，所以这一步用R中的<code>model.matrix.lm()</code>实现</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>formula <span class="ot">&lt;-</span> y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3</span>
@@ -249,23 +251,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  (Intercept)         x1 x2 x3B x3C x3D
-1           1 -7.4089317  8   0   0   0
-2           1  0.5251729 12   0   1   0
-3           1  9.4359070  5   0   1   0
-4           1  7.7402444  1   0   0   1
-5           1 -8.2020473  2   0   1   0
-6           1  0.3581042 13   0   1   0</code></pre>
+1           1  1.8596257 11   0   0   0
+2           1  4.5296224  5   1   0   0
+3           1 -2.5915599 11   0   0   0
+4           1  0.2984766  9   0   0   0
+5           1 -2.4467357 20   0   0   1
+6           1 -1.6332535 15   1   0   0</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(df_model)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(Y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        1         2         3         4         5         6 
-11.182137 41.050346 37.871814 23.480489 -6.404095 43.716208 </code></pre>
+<pre><code>       1        2        3        4        5        6 
+38.71925 27.05924 29.81688 29.59695 60.10653 44.73349 </code></pre>
 </div>
 </div>
 </section>
-<section id="step-2-得到回归系数" class="level3" data-number="1.0.2">
-<h3 data-number="1.0.2" class="anchored" data-anchor-id="step-2-得到回归系数"><span class="header-section-number">1.0.2</span> step 2: 得到回归系数</h3>
+<section id="step-2-得到回归系数" class="level3">
+<h3 class="anchored" data-anchor-id="step-2-得到回归系数">step 2: 得到回归系数</h3>
 <p>假设对于总体数据来说：</p>
 <p><span class="math display">\[
 \mathbf Y = \mathbf X \boldsymbol \beta + \boldsymbol \epsilon
@@ -285,7 +287,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><span class="math display">\[
 \begin{align}
 &amp;\mathbf {X^T (Y - X\hat{\beta})} = \mathbf {0} \\
-&amp;\mathbf {\hat{\beta}} = \mathbf {(X^T X)^{-1}X^TY}
+&amp;\mathbf {\hat{\beta}} = \mathbf {(X^T X)^{-1}X^{T} Y}
 \end{align}
 \]</span></p>
 <div class="cell" data-layout-align="center">
@@ -305,8 +307,14 @@ x3D            3</code></pre>
 </div>
 </div>
 </section>
-<section id="step-3-求出拟合值和误差" class="level3" data-number="1.0.3">
-<h3 data-number="1.0.3" class="anchored" data-anchor-id="step-3-求出拟合值和误差"><span class="header-section-number">1.0.3</span> step 3: 求出拟合值和误差</h3>
+<section id="step-3-求出拟合值和误差" class="level3">
+<h3 class="anchored" data-anchor-id="step-3-求出拟合值和误差">step 3: 求出拟合值和误差</h3>
+<p><span class="math display">\[
+\begin{align}
+\mathbf{\hat{Y}} &amp;= \mathbf{X\hat{\beta}} \\
+\mathbf{e} &amp;= \mathbf{ Y - \hat{Y}}
+\end{align}
+\]</span></p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>get_fit <span class="ot">&lt;-</span> <span class="cf">function</span>(X, beta) {</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  X <span class="sc">%*%</span> beta</span>
@@ -315,34 +323,34 @@ x3D            3</code></pre>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>Y_hat <span class="ot">&lt;-</span> <span class="fu">get_fit</span>(X, beta)</span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(Y_hat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       [,1]
-1 11.182137
-2 41.050346
-3 37.871814
-4 23.480489
-5 -6.404095
-6 43.716208</code></pre>
+<pre><code>      [,1]
+1 38.71925
+2 27.05924
+3 29.81688
+4 29.59695
+5 60.10653
+6 44.73349</code></pre>
 </div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>get_err_vec <span class="ot">&lt;-</span> <span class="cf">function</span>(Y, Y_hat) {</span>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>get_residual <span class="ot">&lt;-</span> <span class="cf">function</span>(Y, Y_hat) {</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  Y <span class="sc">-</span> Y_hat</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>err_vec <span class="ot">&lt;-</span> <span class="fu">get_err_vec</span>(Y, Y_hat)</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(err_vec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>residual <span class="ot">&lt;-</span> <span class="fu">get_residual</span>(Y, Y_hat)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(residual)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           [,1]
-1 -5.506706e-14
-2 -4.263256e-14
-3 -5.684342e-14
-4 -4.618528e-14
-5 -7.105427e-14
-6 -4.263256e-14</code></pre>
+1 -7.105427e-15
+2 -2.842171e-14
+3 -3.552714e-15
+4 -1.421085e-14
+5  2.842171e-14
+6  0.000000e+00</code></pre>
 </div>
 </div>
 </section>
-<section id="step-4-求出系数的标准误" class="level3" data-number="1.0.4">
-<h3 data-number="1.0.4" class="anchored" data-anchor-id="step-4-求出系数的标准误"><span class="header-section-number">1.0.4</span> step 4: 求出系数的标准误</h3>
+<section id="step-4-求出系数的标准误" class="level3">
+<h3 class="anchored" data-anchor-id="step-4-求出系数的标准误">step 4: 求出系数的标准误</h3>
 <p>感觉这一部分的可拓展性比较强，在不同的假设下（同方差、异方差等），系数的标准误不同。这次先假设同方差且无自相关（球星扰动项）。</p>
 <p>求一下自由度</p>
 <div class="cell" data-layout-align="center">
@@ -356,48 +364,48 @@ x3D            3</code></pre>
 </div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>get_err_sepherical <span class="ot">&lt;-</span> <span class="cf">function</span>(err_vec) {</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.numeric</span>(<span class="fu">crossprod</span>(err_vec, err_vec) <span class="sc">/</span> freedom)</span>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>get_var_sepherical <span class="ot">&lt;-</span> <span class="cf">function</span>(residual, freedom) {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.numeric</span>(<span class="fu">crossprod</span>(residual, residual) <span class="sc">/</span> freedom)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>err <span class="ot">&lt;-</span> <span class="fu">get_err_sepherical</span>(err_vec)</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>err</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>residual_var <span class="ot">&lt;-</span> <span class="fu">get_var_sepherical</span>(residual, freedom)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>residual_var</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.479078e-27</code></pre>
+<pre><code>[1] 5.95194e-28</code></pre>
 </div>
 </div>
 <p>球星扰动项假设下，系数的标准误为</p>
 <p><span class="math display">\[
-\mathbf {\text{SE}(\hat{\beta})} = \mathbf {\sqrt {e^2 (X^T X)^{-1}_{kk}}}
+\mathbf {\text{SE}(\hat{\beta})} = \mathbf {\sqrt {\text{Var}(e) (X^T X)^{-1}_{kk}}}
 \]</span></p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>get_beta_se <span class="ot">&lt;-</span> <span class="cf">function</span>(X, err) {</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sqrt</span>(err <span class="sc">*</span> <span class="fu">diag</span>(<span class="fu">solve</span>(<span class="fu">crossprod</span>(X, X))))</span>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>get_beta_se <span class="ot">&lt;-</span> <span class="cf">function</span>(X, residual_var) {</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sqrt</span>(residual_var <span class="sc">*</span> <span class="fu">diag</span>(<span class="fu">solve</span>(<span class="fu">crossprod</span>(X, X))))</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>beta_se <span class="ot">&lt;-</span> <span class="fu">get_beta_se</span>(X, err)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>beta_se <span class="ot">&lt;-</span> <span class="fu">get_beta_se</span>(X, residual_var)</span>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>beta_se</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> (Intercept)           x1           x2          x3B          x3C          x3D 
-3.166013e-15 2.137118e-16 2.126321e-16 3.311594e-15 3.479984e-15 3.454947e-15 </code></pre>
+2.135352e-15 1.373596e-16 1.354870e-16 2.187586e-15 2.153656e-15 2.223240e-15 </code></pre>
 </div>
 </div>
 </section>
-<section id="step-5-系数的t检验" class="level3" data-number="1.0.5">
-<h3 data-number="1.0.5" class="anchored" data-anchor-id="step-5-系数的t检验"><span class="header-section-number">1.0.5</span> step 5: 系数的t检验</h3>
+<section id="step-5-系数的t检验" class="level3">
+<h3 class="anchored" data-anchor-id="step-5-系数的t检验">step 5: 系数的t检验</h3>
 <p>计算系数的t统计量</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>get_beta_t <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, <span class="at">assump =</span> <span class="dv">0</span>) {</span>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>get_beta_t <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, beta_se, <span class="at">assump =</span> <span class="dv">0</span>) {</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  (beta <span class="sc">-</span> assump) <span class="sc">/</span> beta_se</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>beta_t <span class="ot">&lt;-</span> <span class="fu">get_beta_t</span>(beta)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>beta_t <span class="ot">&lt;-</span> <span class="fu">get_beta_t</span>(beta, beta_se)</span>
 <span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>beta_t</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                    [,1]
-(Intercept) 6.317093e+14
-x1          9.358399e+15
-x2          1.410888e+16
-x3B         3.019694e+14
-x3C         5.747153e+14
-x3D         8.683202e+14</code></pre>
+(Intercept) 9.366136e+14
+x1          1.456032e+16
+x2          2.214234e+16
+x3B         4.571248e+14
+x3C         9.286532e+14
+x3D         1.349382e+15</code></pre>
 </div>
 </div>
 <p>置信区间</p>
@@ -438,28 +446,18 @@ x3D            0</code></pre>
 </div>
 </div>
 </section>
-<section id="step-6-整理结果" class="level3" data-number="1.0.6">
-<h3 data-number="1.0.6" class="anchored" data-anchor-id="step-6-整理结果"><span class="header-section-number">1.0.6</span> step 6: 整理结果</h3>
+<section id="step-6-整理结果" class="level3">
+<h3 class="anchored" data-anchor-id="step-6-整理结果">step 6: 整理结果</h3>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>result_df <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(beta,<span class="at">rownames =</span> <span class="st">"term"</span>) <span class="sc">%&gt;%</span> </span>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>result_df <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(beta, <span class="at">rownames =</span> <span class="st">"term"</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">estimate =</span> V1) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(<span class="at">low_conf =</span> conf[, <span class="dv">1</span>], <span class="at">high_conf =</span> conf[, <span class="dv">2</span>], <span class="at">p_value =</span> pvalue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(<span class="at">std_error =</span> beta_se,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">statistics =</span> beta_t[, <span class="dv">1</span>],</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">p_value =</span> pvalue[, <span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if
 `.name_repair` is omitted as of tibble 2.0.0.
 ℹ Using compatibility `.name_repair`.</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>result_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 5
-  term        estimate low_conf high_conf p_value[,1]
-  &lt;chr&gt;          &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
-1 (Intercept)     2.00     2.00      2.00           0
-2 x1              2        2         2              0
-3 x2              3.00     3.00      3              0
-4 x3B             1.00     1.00      1.00           0
-5 x3C             2        2.00      2.00           0
-6 x3D             3.00     3.00      3.00           0</code></pre>
 </div>
 </div>
 </section>
@@ -468,108 +466,799 @@ x3D            0</code></pre>
 <h1 data-number="2"><span class="header-section-number">2</span> 打包成一个函数</h1>
 <p>前面编写的函数有</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>get_beta <span class="ot">&lt;-</span> <span class="cf">function</span>(X, Y) {</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">solve</span>(<span class="fu">crossprod</span>(X, X)) <span class="sc">%*%</span> <span class="fu">crossprod</span>(X, Y)</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>get_fit <span class="ot">&lt;-</span> <span class="cf">function</span>(X, beta) {</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  X <span class="sc">%*%</span> beta</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>get_err_vec <span class="ot">&lt;-</span> <span class="cf">function</span>(Y, Y_hat) {</span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  Y <span class="sc">-</span> Y_hat</span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>get_freedom <span class="ot">&lt;-</span> <span class="cf">function</span>(X) {</span>
-<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>(X) <span class="sc">-</span> <span class="fu">ncol</span>(X)</span>
-<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>get_err_sepherical <span class="ot">&lt;-</span> <span class="cf">function</span>(err_vec) {</span>
-<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.numeric</span>(<span class="fu">crossprod</span>(err_vec, err_vec) <span class="sc">/</span> freedom)</span>
-<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>get_beta_se <span class="ot">&lt;-</span> <span class="cf">function</span>(X, err) {</span>
-<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sqrt</span>(err <span class="sc">*</span> <span class="fu">diag</span>(<span class="fu">solve</span>(<span class="fu">crossprod</span>(X, X))))</span>
-<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>get_beta_t <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, <span class="at">assump =</span> <span class="dv">0</span>) {</span>
-<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>  (beta <span class="sc">-</span> assump) <span class="sc">/</span> beta_se</span>
-<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>get_conf <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, beta_se, freedom, <span class="at">p =</span> <span class="fl">0.05</span>) {</span>
-<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a>  beta_lconf <span class="ot">&lt;-</span> beta <span class="sc">+</span> <span class="fu">qt</span>(p, freedom) <span class="sc">*</span> beta_se</span>
-<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a>  beta_hconf <span class="ot">&lt;-</span> beta <span class="sc">-</span> <span class="fu">qt</span>(p, freedom) <span class="sc">*</span> beta_se</span>
-<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(beta_lconf, beta_hconf)</span>
-<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a>get_pvalue <span class="ot">&lt;-</span> <span class="cf">function</span>(beta_t, freedom) {</span>
-<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pt</span>(<span class="fu">abs</span>(beta_t), freedom)</span>
-<span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>get_beta <span class="ot">&lt;-</span> <span class="cf">function</span>(X, Y) {</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">solve</span>(<span class="fu">crossprod</span>(X, X)) <span class="sc">%*%</span> <span class="fu">crossprod</span>(X, Y)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>get_fit <span class="ot">&lt;-</span> <span class="cf">function</span>(X, beta) {</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  X <span class="sc">%*%</span> beta</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>get_residual <span class="ot">&lt;-</span> <span class="cf">function</span>(Y, Y_hat) {</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  Y <span class="sc">-</span> Y_hat</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>get_freedom <span class="ot">&lt;-</span> <span class="cf">function</span>(X) {</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>(X) <span class="sc">-</span> <span class="fu">ncol</span>(X)</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>get_var_sepherical <span class="ot">&lt;-</span> <span class="cf">function</span>(residual, freedom) {</span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.numeric</span>(<span class="fu">crossprod</span>(residual, residual) <span class="sc">/</span> freedom)</span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>get_beta_se <span class="ot">&lt;-</span> <span class="cf">function</span>(X, residual) {</span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sqrt</span>(residual <span class="sc">*</span> <span class="fu">diag</span>(<span class="fu">solve</span>(<span class="fu">crossprod</span>(X, X))))</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>get_beta_t <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, beta_se, <span class="at">assump =</span> <span class="dv">0</span>) {</span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>  (beta <span class="sc">-</span> assump) <span class="sc">/</span> beta_se</span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>get_conf <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, beta_se, freedom, <span class="at">p =</span> <span class="fl">0.05</span>) {</span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>  beta_lconf <span class="ot">&lt;-</span> beta <span class="sc">+</span> <span class="fu">qt</span>(p, freedom) <span class="sc">*</span> beta_se</span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a>  beta_hconf <span class="ot">&lt;-</span> beta <span class="sc">-</span> <span class="fu">qt</span>(p, freedom) <span class="sc">*</span> beta_se</span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(beta_lconf, beta_hconf)</span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a>get_pvalue <span class="ot">&lt;-</span> <span class="cf">function</span>(beta_t, freedom) {</span>
+<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pt</span>(<span class="fu">abs</span>(beta_t), freedom)</span>
+<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>my_lm <span class="ot">&lt;-</span> <span class="cf">function</span>(formula, df) {</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  formula <span class="ot">&lt;-</span> y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  df_model <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(formula, df)</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  X <span class="ot">&lt;-</span> <span class="fu">model.matrix.lm</span>(df_model)</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  Y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(df_model)</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">&lt;-</span> <span class="fu">get_beta</span>(X, Y)</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  Y_hat <span class="ot">&lt;-</span> <span class="fu">get_fit</span>(X, beta)</span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  err_vec <span class="ot">&lt;-</span> <span class="fu">get_err_vec</span>(Y, Y_hat)</span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>  freedom <span class="ot">&lt;-</span> <span class="fu">get_freedom</span>(X)</span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>  err <span class="ot">&lt;-</span> <span class="fu">get_err_sepherical</span>(err_vec)</span>
-<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>  beta_se <span class="ot">&lt;-</span> <span class="fu">get_beta_se</span>(X, err)</span>
-<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>  beta_t <span class="ot">&lt;-</span> <span class="fu">get_beta_t</span>(beta)</span>
-<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">#conf &lt;- get_conf(beta, beta_se, freedom)</span></span>
-<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>  pvalue <span class="ot">&lt;-</span> <span class="fu">get_pvalue</span>(beta_t, freedom)</span>
-<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>  result_df <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(beta,<span class="at">rownames =</span> <span class="st">"term"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">estimate =</span> V1) <span class="sc">%&gt;%</span> </span>
-<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_cols</span>(<span class="co">#low_conf = conf[, 1], </span></span>
-<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>              <span class="co">#high_conf = conf[, 2], </span></span>
-<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>              <span class="at">std_erro =</span> beta_se,</span>
-<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a>              <span class="at">statistics =</span> beta_t,</span>
-<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a>              <span class="at">p_value =</span> pvalue)</span>
-<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(result_df)</span>
-<span id="cb31-31"><a href="#cb31-31" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>my_lm <span class="ot">&lt;-</span> <span class="cf">function</span>(formula, df) {</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  df_model <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(formula, df)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  X <span class="ot">&lt;-</span> <span class="fu">model.matrix.lm</span>(df_model)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  Y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(df_model)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">&lt;-</span> <span class="fu">get_beta</span>(X, Y)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  Y_hat <span class="ot">&lt;-</span> <span class="fu">get_fit</span>(X, beta)</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  residual <span class="ot">&lt;-</span> <span class="fu">get_residual</span>(Y, Y_hat)</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  freedom <span class="ot">&lt;-</span> <span class="fu">get_freedom</span>(X)</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>  residual_var <span class="ot">&lt;-</span> <span class="fu">get_var_sepherical</span>(residual, freedom)</span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>  beta_se <span class="ot">&lt;-</span> <span class="fu">get_beta_se</span>(X, residual_var)</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>  beta_t <span class="ot">&lt;-</span> <span class="fu">get_beta_t</span>(beta, beta_se)</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">#conf &lt;- get_conf(beta, beta_se, freedom)</span></span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>  pvalue <span class="ot">&lt;-</span> <span class="fu">get_pvalue</span>(beta_t, freedom)</span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>  result_df <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(beta,<span class="at">rownames =</span> <span class="st">"term"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">estimate =</span> V1) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_cols</span>(<span class="at">std_error =</span> beta_se,</span>
+<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a>              <span class="at">statistics =</span> beta_t[, <span class="dv">1</span>],</span>
+<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a>              <span class="at">p_value =</span> pvalue[, <span class="dv">1</span>])</span>
+<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(result_df)</span>
+<span id="cb29-28"><a href="#cb29-28" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">my_lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3, df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>my_result <span class="ot">&lt;-</span> <span class="fu">my_lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3, <span class="at">df =</span> df)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>my_result</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 5
-  term        estimate std_erro statistics[,1] p_value[,1]
-  &lt;chr&gt;          &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;       &lt;dbl&gt;
-1 (Intercept)     2.00 3.17e-15        6.32e14           0
-2 x1              2    2.14e-16        9.36e15           0
-3 x2              3.00 2.13e-16        1.41e16           0
-4 x3B             1.00 3.31e-15        3.02e14           0
-5 x3C             2    3.48e-15        5.75e14           0
-6 x3D             3.00 3.45e-15        8.68e14           0</code></pre>
+  term        estimate std_error statistics p_value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;
+1 (Intercept)     2.00  2.14e-15    9.37e14       0
+2 x1              2.00  1.37e-16    1.46e16       0
+3 x2              3     1.35e-16    2.21e16       0
+4 x3B             1     2.19e-15    4.57e14       0
+5 x3C             2.00  2.15e-15    9.29e14       0
+6 x3D             3.00  2.22e-15    1.35e15       0</code></pre>
 </div>
 </div>
 <p>对比一下<code>lm()</code>的结果</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3, df) <span class="sc">%&gt;%</span> </span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>lm_result <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3, df) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in summary.lm(x): essentially perfect fit: summary may be unreliable</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>lm_result</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 5
   term        estimate std.error statistic p.value
   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-1 (Intercept)     2.00  3.83e-16   5.23e15       0
-2 x1              2     2.58e-17   7.74e16       0
-3 x2              3     2.57e-17   1.17e17       0
-4 x3B             1     4.00e-16   2.50e15       0
-5 x3C             2     4.21e-16   4.76e15       0
-6 x3D             3     4.18e-16   7.18e15       0</code></pre>
+1 (Intercept)     2     9.24e-16   2.16e15       0
+2 x1              2     5.94e-17   3.37e16       0
+3 x2              3     5.86e-17   5.12e16       0
+4 x3B             1.00  9.47e-16   1.06e15       0
+5 x3C             2.00  9.32e-16   2.15e15       0
+6 x3D             3     9.62e-16   3.12e15       0</code></pre>
+</div>
+</div>
+<p>结果看起来不对，但其实是浮点数的数字存储机制造成的，比如</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="dv">2</span>) <span class="sc">^</span> <span class="dv">2</span> <span class="sc">==</span> <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+</div>
+<p>这使应该使用<code>near()</code>来判断两个数是否相等</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">near</span>(<span class="fu">sqrt</span>(<span class="dv">2</span>) <span class="sc">^</span> <span class="dv">2</span>, <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">near</span>(my_result<span class="sc">$</span>std_error, lm_result<span class="sc">$</span>std.error)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)          x1          x2         x3B         x3C         x3D 
+       TRUE        TRUE        TRUE        TRUE        TRUE        TRUE </code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">near</span>(my_result<span class="sc">$</span>statistics, lm_result<span class="sc">$</span>statistic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)          x1          x2         x3B         x3C         x3D 
+      FALSE       FALSE       FALSE       FALSE       FALSE       FALSE </code></pre>
+</div>
+</div>
+</section>
+<section id="使用真实的数据集" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> 使用真实的数据集</h1>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>ChickWeight</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    weight Time Chick Diet
+1       42    0     1    1
+2       51    2     1    1
+3       59    4     1    1
+4       64    6     1    1
+5       76    8     1    1
+6       93   10     1    1
+7      106   12     1    1
+8      125   14     1    1
+9      149   16     1    1
+10     171   18     1    1
+11     199   20     1    1
+12     205   21     1    1
+13      40    0     2    1
+14      49    2     2    1
+15      58    4     2    1
+16      72    6     2    1
+17      84    8     2    1
+18     103   10     2    1
+19     122   12     2    1
+20     138   14     2    1
+21     162   16     2    1
+22     187   18     2    1
+23     209   20     2    1
+24     215   21     2    1
+25      43    0     3    1
+26      39    2     3    1
+27      55    4     3    1
+28      67    6     3    1
+29      84    8     3    1
+30      99   10     3    1
+31     115   12     3    1
+32     138   14     3    1
+33     163   16     3    1
+34     187   18     3    1
+35     198   20     3    1
+36     202   21     3    1
+37      42    0     4    1
+38      49    2     4    1
+39      56    4     4    1
+40      67    6     4    1
+41      74    8     4    1
+42      87   10     4    1
+43     102   12     4    1
+44     108   14     4    1
+45     136   16     4    1
+46     154   18     4    1
+47     160   20     4    1
+48     157   21     4    1
+49      41    0     5    1
+50      42    2     5    1
+51      48    4     5    1
+52      60    6     5    1
+53      79    8     5    1
+54     106   10     5    1
+55     141   12     5    1
+56     164   14     5    1
+57     197   16     5    1
+58     199   18     5    1
+59     220   20     5    1
+60     223   21     5    1
+61      41    0     6    1
+62      49    2     6    1
+63      59    4     6    1
+64      74    6     6    1
+65      97    8     6    1
+66     124   10     6    1
+67     141   12     6    1
+68     148   14     6    1
+69     155   16     6    1
+70     160   18     6    1
+71     160   20     6    1
+72     157   21     6    1
+73      41    0     7    1
+74      49    2     7    1
+75      57    4     7    1
+76      71    6     7    1
+77      89    8     7    1
+78     112   10     7    1
+79     146   12     7    1
+80     174   14     7    1
+81     218   16     7    1
+82     250   18     7    1
+83     288   20     7    1
+84     305   21     7    1
+85      42    0     8    1
+86      50    2     8    1
+87      61    4     8    1
+88      71    6     8    1
+89      84    8     8    1
+90      93   10     8    1
+91     110   12     8    1
+92     116   14     8    1
+93     126   16     8    1
+94     134   18     8    1
+95     125   20     8    1
+96      42    0     9    1
+97      51    2     9    1
+98      59    4     9    1
+99      68    6     9    1
+100     85    8     9    1
+101     96   10     9    1
+102     90   12     9    1
+103     92   14     9    1
+104     93   16     9    1
+105    100   18     9    1
+106    100   20     9    1
+107     98   21     9    1
+108     41    0    10    1
+109     44    2    10    1
+110     52    4    10    1
+111     63    6    10    1
+112     74    8    10    1
+113     81   10    10    1
+114     89   12    10    1
+115     96   14    10    1
+116    101   16    10    1
+117    112   18    10    1
+118    120   20    10    1
+119    124   21    10    1
+120     43    0    11    1
+121     51    2    11    1
+122     63    4    11    1
+123     84    6    11    1
+124    112    8    11    1
+125    139   10    11    1
+126    168   12    11    1
+127    177   14    11    1
+128    182   16    11    1
+129    184   18    11    1
+130    181   20    11    1
+131    175   21    11    1
+132     41    0    12    1
+133     49    2    12    1
+134     56    4    12    1
+135     62    6    12    1
+136     72    8    12    1
+137     88   10    12    1
+138    119   12    12    1
+139    135   14    12    1
+140    162   16    12    1
+141    185   18    12    1
+142    195   20    12    1
+143    205   21    12    1
+144     41    0    13    1
+145     48    2    13    1
+146     53    4    13    1
+147     60    6    13    1
+148     65    8    13    1
+149     67   10    13    1
+150     71   12    13    1
+151     70   14    13    1
+152     71   16    13    1
+153     81   18    13    1
+154     91   20    13    1
+155     96   21    13    1
+156     41    0    14    1
+157     49    2    14    1
+158     62    4    14    1
+159     79    6    14    1
+160    101    8    14    1
+161    128   10    14    1
+162    164   12    14    1
+163    192   14    14    1
+164    227   16    14    1
+165    248   18    14    1
+166    259   20    14    1
+167    266   21    14    1
+168     41    0    15    1
+169     49    2    15    1
+170     56    4    15    1
+171     64    6    15    1
+172     68    8    15    1
+173     68   10    15    1
+174     67   12    15    1
+175     68   14    15    1
+176     41    0    16    1
+177     45    2    16    1
+178     49    4    16    1
+179     51    6    16    1
+180     57    8    16    1
+181     51   10    16    1
+182     54   12    16    1
+183     42    0    17    1
+184     51    2    17    1
+185     61    4    17    1
+186     72    6    17    1
+187     83    8    17    1
+188     89   10    17    1
+189     98   12    17    1
+190    103   14    17    1
+191    113   16    17    1
+192    123   18    17    1
+193    133   20    17    1
+194    142   21    17    1
+195     39    0    18    1
+196     35    2    18    1
+197     43    0    19    1
+198     48    2    19    1
+199     55    4    19    1
+200     62    6    19    1
+201     65    8    19    1
+202     71   10    19    1
+203     82   12    19    1
+204     88   14    19    1
+205    106   16    19    1
+206    120   18    19    1
+207    144   20    19    1
+208    157   21    19    1
+209     41    0    20    1
+210     47    2    20    1
+211     54    4    20    1
+212     58    6    20    1
+213     65    8    20    1
+214     73   10    20    1
+215     77   12    20    1
+216     89   14    20    1
+217     98   16    20    1
+218    107   18    20    1
+219    115   20    20    1
+220    117   21    20    1
+221     40    0    21    2
+222     50    2    21    2
+223     62    4    21    2
+224     86    6    21    2
+225    125    8    21    2
+226    163   10    21    2
+227    217   12    21    2
+228    240   14    21    2
+229    275   16    21    2
+230    307   18    21    2
+231    318   20    21    2
+232    331   21    21    2
+233     41    0    22    2
+234     55    2    22    2
+235     64    4    22    2
+236     77    6    22    2
+237     90    8    22    2
+238     95   10    22    2
+239    108   12    22    2
+240    111   14    22    2
+241    131   16    22    2
+242    148   18    22    2
+243    164   20    22    2
+244    167   21    22    2
+245     43    0    23    2
+246     52    2    23    2
+247     61    4    23    2
+248     73    6    23    2
+249     90    8    23    2
+250    103   10    23    2
+251    127   12    23    2
+252    135   14    23    2
+253    145   16    23    2
+254    163   18    23    2
+255    170   20    23    2
+256    175   21    23    2
+257     42    0    24    2
+258     52    2    24    2
+259     58    4    24    2
+260     74    6    24    2
+261     66    8    24    2
+262     68   10    24    2
+263     70   12    24    2
+264     71   14    24    2
+265     72   16    24    2
+266     72   18    24    2
+267     76   20    24    2
+268     74   21    24    2
+269     40    0    25    2
+270     49    2    25    2
+271     62    4    25    2
+272     78    6    25    2
+273    102    8    25    2
+274    124   10    25    2
+275    146   12    25    2
+276    164   14    25    2
+277    197   16    25    2
+278    231   18    25    2
+279    259   20    25    2
+280    265   21    25    2
+281     42    0    26    2
+282     48    2    26    2
+283     57    4    26    2
+284     74    6    26    2
+285     93    8    26    2
+286    114   10    26    2
+287    136   12    26    2
+288    147   14    26    2
+289    169   16    26    2
+290    205   18    26    2
+291    236   20    26    2
+292    251   21    26    2
+293     39    0    27    2
+294     46    2    27    2
+295     58    4    27    2
+296     73    6    27    2
+297     87    8    27    2
+298    100   10    27    2
+299    115   12    27    2
+300    123   14    27    2
+301    144   16    27    2
+302    163   18    27    2
+303    185   20    27    2
+304    192   21    27    2
+305     39    0    28    2
+306     46    2    28    2
+307     58    4    28    2
+308     73    6    28    2
+309     92    8    28    2
+310    114   10    28    2
+311    145   12    28    2
+312    156   14    28    2
+313    184   16    28    2
+314    207   18    28    2
+315    212   20    28    2
+316    233   21    28    2
+317     39    0    29    2
+318     48    2    29    2
+319     59    4    29    2
+320     74    6    29    2
+321     87    8    29    2
+322    106   10    29    2
+323    134   12    29    2
+324    150   14    29    2
+325    187   16    29    2
+326    230   18    29    2
+327    279   20    29    2
+328    309   21    29    2
+329     42    0    30    2
+330     48    2    30    2
+331     59    4    30    2
+332     72    6    30    2
+333     85    8    30    2
+334     98   10    30    2
+335    115   12    30    2
+336    122   14    30    2
+337    143   16    30    2
+338    151   18    30    2
+339    157   20    30    2
+340    150   21    30    2
+341     42    0    31    3
+342     53    2    31    3
+343     62    4    31    3
+344     73    6    31    3
+345     85    8    31    3
+346    102   10    31    3
+347    123   12    31    3
+348    138   14    31    3
+349    170   16    31    3
+350    204   18    31    3
+351    235   20    31    3
+352    256   21    31    3
+353     41    0    32    3
+354     49    2    32    3
+355     65    4    32    3
+356     82    6    32    3
+357    107    8    32    3
+358    129   10    32    3
+359    159   12    32    3
+360    179   14    32    3
+361    221   16    32    3
+362    263   18    32    3
+363    291   20    32    3
+364    305   21    32    3
+365     39    0    33    3
+366     50    2    33    3
+367     63    4    33    3
+368     77    6    33    3
+369     96    8    33    3
+370    111   10    33    3
+371    137   12    33    3
+372    144   14    33    3
+373    151   16    33    3
+374    146   18    33    3
+375    156   20    33    3
+376    147   21    33    3
+377     41    0    34    3
+378     49    2    34    3
+379     63    4    34    3
+380     85    6    34    3
+381    107    8    34    3
+382    134   10    34    3
+383    164   12    34    3
+384    186   14    34    3
+385    235   16    34    3
+386    294   18    34    3
+387    327   20    34    3
+388    341   21    34    3
+389     41    0    35    3
+390     53    2    35    3
+391     64    4    35    3
+392     87    6    35    3
+393    123    8    35    3
+394    158   10    35    3
+395    201   12    35    3
+396    238   14    35    3
+397    287   16    35    3
+398    332   18    35    3
+399    361   20    35    3
+400    373   21    35    3
+401     39    0    36    3
+402     48    2    36    3
+403     61    4    36    3
+404     76    6    36    3
+405     98    8    36    3
+406    116   10    36    3
+407    145   12    36    3
+408    166   14    36    3
+409    198   16    36    3
+410    227   18    36    3
+411    225   20    36    3
+412    220   21    36    3
+413     41    0    37    3
+414     48    2    37    3
+415     56    4    37    3
+416     68    6    37    3
+417     80    8    37    3
+418     83   10    37    3
+419    103   12    37    3
+420    112   14    37    3
+421    135   16    37    3
+422    157   18    37    3
+423    169   20    37    3
+424    178   21    37    3
+425     41    0    38    3
+426     49    2    38    3
+427     61    4    38    3
+428     74    6    38    3
+429     98    8    38    3
+430    109   10    38    3
+431    128   12    38    3
+432    154   14    38    3
+433    192   16    38    3
+434    232   18    38    3
+435    280   20    38    3
+436    290   21    38    3
+437     42    0    39    3
+438     50    2    39    3
+439     61    4    39    3
+440     78    6    39    3
+441     89    8    39    3
+442    109   10    39    3
+443    130   12    39    3
+444    146   14    39    3
+445    170   16    39    3
+446    214   18    39    3
+447    250   20    39    3
+448    272   21    39    3
+449     41    0    40    3
+450     55    2    40    3
+451     66    4    40    3
+452     79    6    40    3
+453    101    8    40    3
+454    120   10    40    3
+455    154   12    40    3
+456    182   14    40    3
+457    215   16    40    3
+458    262   18    40    3
+459    295   20    40    3
+460    321   21    40    3
+461     42    0    41    4
+462     51    2    41    4
+463     66    4    41    4
+464     85    6    41    4
+465    103    8    41    4
+466    124   10    41    4
+467    155   12    41    4
+468    153   14    41    4
+469    175   16    41    4
+470    184   18    41    4
+471    199   20    41    4
+472    204   21    41    4
+473     42    0    42    4
+474     49    2    42    4
+475     63    4    42    4
+476     84    6    42    4
+477    103    8    42    4
+478    126   10    42    4
+479    160   12    42    4
+480    174   14    42    4
+481    204   16    42    4
+482    234   18    42    4
+483    269   20    42    4
+484    281   21    42    4
+485     42    0    43    4
+486     55    2    43    4
+487     69    4    43    4
+488     96    6    43    4
+489    131    8    43    4
+490    157   10    43    4
+491    184   12    43    4
+492    188   14    43    4
+493    197   16    43    4
+494    198   18    43    4
+495    199   20    43    4
+496    200   21    43    4
+497     42    0    44    4
+498     51    2    44    4
+499     65    4    44    4
+500     86    6    44    4
+501    103    8    44    4
+502    118   10    44    4
+503    127   12    44    4
+504    138   14    44    4
+505    145   16    44    4
+506    146   18    44    4
+507     41    0    45    4
+508     50    2    45    4
+509     61    4    45    4
+510     78    6    45    4
+511     98    8    45    4
+512    117   10    45    4
+513    135   12    45    4
+514    141   14    45    4
+515    147   16    45    4
+516    174   18    45    4
+517    197   20    45    4
+518    196   21    45    4
+519     40    0    46    4
+520     52    2    46    4
+521     62    4    46    4
+522     82    6    46    4
+523    101    8    46    4
+524    120   10    46    4
+525    144   12    46    4
+526    156   14    46    4
+527    173   16    46    4
+528    210   18    46    4
+529    231   20    46    4
+530    238   21    46    4
+531     41    0    47    4
+532     53    2    47    4
+533     66    4    47    4
+534     79    6    47    4
+535    100    8    47    4
+536    123   10    47    4
+537    148   12    47    4
+538    157   14    47    4
+539    168   16    47    4
+540    185   18    47    4
+541    210   20    47    4
+542    205   21    47    4
+543     39    0    48    4
+544     50    2    48    4
+545     62    4    48    4
+546     80    6    48    4
+547    104    8    48    4
+548    125   10    48    4
+549    154   12    48    4
+550    170   14    48    4
+551    222   16    48    4
+552    261   18    48    4
+553    303   20    48    4
+554    322   21    48    4
+555     40    0    49    4
+556     53    2    49    4
+557     64    4    49    4
+558     85    6    49    4
+559    108    8    49    4
+560    128   10    49    4
+561    152   12    49    4
+562    166   14    49    4
+563    184   16    49    4
+564    203   18    49    4
+565    233   20    49    4
+566    237   21    49    4
+567     41    0    50    4
+568     54    2    50    4
+569     67    4    50    4
+570     84    6    50    4
+571    105    8    50    4
+572    122   10    50    4
+573    155   12    50    4
+574    175   14    50    4
+575    205   16    50    4
+576    234   18    50    4
+577    264   20    50    4
+578    264   21    50    4</code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>mtcars</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+Merc 240D           24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+Merc 230            22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+Merc 280C           17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
+Merc 450SE          16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
+Merc 450SL          17.3   8 275.8 180 3.07 3.730 17.60  0  0    3    3
+Merc 450SLC         15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+Cadillac Fleetwood  10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4
+Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
+Chrysler Imperial   14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
+Fiat 128            32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+Honda Civic         30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+Toyota Corolla      33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+Toyota Corona       21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+Dodge Challenger    15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
+AMC Javelin         15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
+Camaro Z28          13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
+Pontiac Firebird    19.2   8 400.0 175 3.08 3.845 17.05  0  0    3    2
+Fiat X1-9           27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+Porsche 914-2       26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+Lotus Europa        30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+Ford Pantera L      15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
+Ferrari Dino        19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
+Maserati Bora       15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8
+Volvo 142E          21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2</code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">my_lm</span>(mpg <span class="sc">~</span> ., mtcars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 11 × 5
+   term        estimate std_error statistics p_value
+   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;
+ 1 (Intercept)  12.3      18.7         0.657  0.259 
+ 2 cyl          -0.111     1.05       -0.107  0.458 
+ 3 disp          0.0133    0.0179      0.747  0.232 
+ 4 hp           -0.0215    0.0218     -0.987  0.167 
+ 5 drat          0.787     1.64        0.481  0.318 
+ 6 wt           -3.72      1.89       -1.96   0.0316
+ 7 qsec          0.821     0.731       1.12   0.137 
+ 8 vs            0.318     2.10        0.151  0.441 
+ 9 am            2.52      2.06        1.23   0.117 
+10 gear          0.655     1.49        0.439  0.333 
+11 carb         -0.199     0.829      -0.241  0.406 </code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(mpg <span class="sc">~</span> ., mtcars) <span class="sc">%&gt;%</span> </span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 11 × 5
+   term        estimate std.error statistic p.value
+   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+ 1 (Intercept)  12.3      18.7        0.657  0.518 
+ 2 cyl          -0.111     1.05      -0.107  0.916 
+ 3 disp          0.0133    0.0179     0.747  0.463 
+ 4 hp           -0.0215    0.0218    -0.987  0.335 
+ 5 drat          0.787     1.64       0.481  0.635 
+ 6 wt           -3.72      1.89      -1.96   0.0633
+ 7 qsec          0.821     0.731      1.12   0.274 
+ 8 vs            0.318     2.10       0.151  0.881 
+ 9 am            2.52      2.06       1.23   0.234 
+10 gear          0.655     1.49       0.439  0.665 
+11 carb         -0.199     0.829     -0.241  0.812 </code></pre>
 </div>
 </div>
 
@@ -980,294 +1669,344 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <script src="https://giscus.app/client.js" data-repo="FangyaunLi/My-Blog" data-repo-id="R_kgDOLZCLjA" data-category="General" data-category-id="" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb37" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> 实现简单线性回归</span></span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span><span class="co"> [R, econometrics]</span></span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2024-03-25"</span></span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
-<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(hrbrthemes<span class="sc">::</span><span class="fu">theme_ipsum_rc</span>())</span>
-<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a>准备花几期时间，自己写代码，实现常用的计量方法。</span>
-<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a>生成模拟数据</span>
-<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span></span>
-<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(x) <span class="ot">&lt;-</span> LETTERS[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span>
-<span id="cb37-27"><a href="#cb37-27" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb37-28"><a href="#cb37-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">x1 =</span> <span class="fu">runif</span>(<span class="dv">1000</span>, <span class="sc">-</span><span class="dv">10</span>, <span class="dv">10</span>),</span>
-<span id="cb37-29"><a href="#cb37-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">x2 =</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, <span class="dv">1000</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb37-30"><a href="#cb37-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">x3 =</span> <span class="fu">sample</span>(LETTERS[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="dv">1000</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb37-31"><a href="#cb37-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">error =</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="at">sd =</span> <span class="dv">1000</span>),</span>
-<span id="cb37-32"><a href="#cb37-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> x1 <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> x2 <span class="sc">+</span> x[x3]</span>
-<span id="cb37-33"><a href="#cb37-33" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb37-34"><a href="#cb37-34" aria-hidden="true" tabindex="-1"></a>df</span>
-<span id="cb37-35"><a href="#cb37-35" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-36"><a href="#cb37-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-37"><a href="#cb37-37" aria-hidden="true" tabindex="-1"></a><span class="fu"># 步骤拆解</span></span>
-<span id="cb37-38"><a href="#cb37-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-39"><a href="#cb37-39" aria-hidden="true" tabindex="-1"></a><span class="fu">### step 1: 根据formula生成矩阵</span></span>
-<span id="cb37-40"><a href="#cb37-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-41"><a href="#cb37-41" aria-hidden="true" tabindex="-1"></a>因为<span class="in">`formula`</span>是R里面一个特殊的<span class="in">`class`</span>，他的具体机制我没弄清楚，所以这一步用R中的<span class="in">`model.matrix.lm()`</span>实现</span>
-<span id="cb37-42"><a href="#cb37-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-45"><a href="#cb37-45" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-46"><a href="#cb37-46" aria-hidden="true" tabindex="-1"></a>formula <span class="ot">&lt;-</span> y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3</span>
-<span id="cb37-47"><a href="#cb37-47" aria-hidden="true" tabindex="-1"></a>df_model <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(formula, df)</span>
-<span id="cb37-48"><a href="#cb37-48" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix.lm</span>(df_model)</span>
-<span id="cb37-49"><a href="#cb37-49" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span>
-<span id="cb37-50"><a href="#cb37-50" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(df_model)</span>
-<span id="cb37-51"><a href="#cb37-51" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(Y)</span>
-<span id="cb37-52"><a href="#cb37-52" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-53"><a href="#cb37-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-54"><a href="#cb37-54" aria-hidden="true" tabindex="-1"></a><span class="fu">### step 2: 得到回归系数</span></span>
-<span id="cb37-55"><a href="#cb37-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-56"><a href="#cb37-56" aria-hidden="true" tabindex="-1"></a>假设对于总体数据来说：</span>
-<span id="cb37-57"><a href="#cb37-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-58"><a href="#cb37-58" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb37-59"><a href="#cb37-59" aria-hidden="true" tabindex="-1"></a>\mathbf Y = \mathbf X \boldsymbol \beta + \boldsymbol \epsilon</span>
-<span id="cb37-60"><a href="#cb37-60" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb37-61"><a href="#cb37-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-62"><a href="#cb37-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-63"><a href="#cb37-63" aria-hidden="true" tabindex="-1"></a>但是我们得到的拟合方程是：</span>
-<span id="cb37-64"><a href="#cb37-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-65"><a href="#cb37-65" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb37-66"><a href="#cb37-66" aria-hidden="true" tabindex="-1"></a>\hat{\mathbf Y} = \mathbf X \hat{\boldsymbol \beta}</span>
-<span id="cb37-67"><a href="#cb37-67" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb37-68"><a href="#cb37-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-69"><a href="#cb37-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-70"><a href="#cb37-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-71"><a href="#cb37-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-72"><a href="#cb37-72" aria-hidden="true" tabindex="-1"></a>且</span>
-<span id="cb37-73"><a href="#cb37-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-74"><a href="#cb37-74" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb37-75"><a href="#cb37-75" aria-hidden="true" tabindex="-1"></a>\begin{align}</span>
-<span id="cb37-76"><a href="#cb37-76" aria-hidden="true" tabindex="-1"></a>\boldsymbol e &amp;= \mathbf Y - \hat{\mathbf Y} <span class="sc">\\</span></span>
-<span id="cb37-77"><a href="#cb37-77" aria-hidden="true" tabindex="-1"></a>&amp;= \mathbf Y - \mathbf X \hat{\boldsymbol \beta}</span>
-<span id="cb37-78"><a href="#cb37-78" aria-hidden="true" tabindex="-1"></a>\end{align}</span>
-<span id="cb37-79"><a href="#cb37-79" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb37-80"><a href="#cb37-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-81"><a href="#cb37-81" aria-hidden="true" tabindex="-1"></a>要想使$\mathbf Y - \hat{\mathbf Y}$最小，则$\boldsymbol e$与$\mathbf X$正交，即</span>
-<span id="cb37-82"><a href="#cb37-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-83"><a href="#cb37-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-84"><a href="#cb37-84" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb37-85"><a href="#cb37-85" aria-hidden="true" tabindex="-1"></a>\begin{align}</span>
-<span id="cb37-86"><a href="#cb37-86" aria-hidden="true" tabindex="-1"></a>&amp;\mathbf {X^T (Y - X\hat{\beta})} = \mathbf {0} <span class="sc">\\</span></span>
-<span id="cb37-87"><a href="#cb37-87" aria-hidden="true" tabindex="-1"></a>&amp;\mathbf {\hat{\beta}} = \mathbf {(X^T X)^{-1}X^TY} </span>
-<span id="cb37-88"><a href="#cb37-88" aria-hidden="true" tabindex="-1"></a>\end{align}</span>
-<span id="cb37-89"><a href="#cb37-89" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb37-90"><a href="#cb37-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-91"><a href="#cb37-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-94"><a href="#cb37-94" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-95"><a href="#cb37-95" aria-hidden="true" tabindex="-1"></a>get_beta <span class="ot">&lt;-</span> <span class="cf">function</span>(X, Y) {</span>
-<span id="cb37-96"><a href="#cb37-96" aria-hidden="true" tabindex="-1"></a>  <span class="fu">solve</span>(<span class="fu">crossprod</span>(X, X)) <span class="sc">%*%</span> <span class="fu">crossprod</span>(X, Y)</span>
-<span id="cb37-97"><a href="#cb37-97" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-98"><a href="#cb37-98" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">get_beta</span>(X, Y)</span>
-<span id="cb37-99"><a href="#cb37-99" aria-hidden="true" tabindex="-1"></a>beta</span>
-<span id="cb37-100"><a href="#cb37-100" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-101"><a href="#cb37-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-102"><a href="#cb37-102" aria-hidden="true" tabindex="-1"></a><span class="fu">### step 3: 求出拟合值和误差</span></span>
-<span id="cb37-103"><a href="#cb37-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-106"><a href="#cb37-106" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-107"><a href="#cb37-107" aria-hidden="true" tabindex="-1"></a>get_fit <span class="ot">&lt;-</span> <span class="cf">function</span>(X, beta) {</span>
-<span id="cb37-108"><a href="#cb37-108" aria-hidden="true" tabindex="-1"></a>  X <span class="sc">%*%</span> beta</span>
-<span id="cb37-109"><a href="#cb37-109" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-110"><a href="#cb37-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-111"><a href="#cb37-111" aria-hidden="true" tabindex="-1"></a>Y_hat <span class="ot">&lt;-</span> <span class="fu">get_fit</span>(X, beta)</span>
-<span id="cb37-112"><a href="#cb37-112" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(Y_hat)</span>
-<span id="cb37-113"><a href="#cb37-113" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-114"><a href="#cb37-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-117"><a href="#cb37-117" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-118"><a href="#cb37-118" aria-hidden="true" tabindex="-1"></a>get_err_vec <span class="ot">&lt;-</span> <span class="cf">function</span>(Y, Y_hat) {</span>
-<span id="cb37-119"><a href="#cb37-119" aria-hidden="true" tabindex="-1"></a>  Y <span class="sc">-</span> Y_hat</span>
-<span id="cb37-120"><a href="#cb37-120" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-121"><a href="#cb37-121" aria-hidden="true" tabindex="-1"></a>err_vec <span class="ot">&lt;-</span> <span class="fu">get_err_vec</span>(Y, Y_hat)</span>
-<span id="cb37-122"><a href="#cb37-122" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(err_vec)</span>
-<span id="cb37-123"><a href="#cb37-123" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-124"><a href="#cb37-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-125"><a href="#cb37-125" aria-hidden="true" tabindex="-1"></a><span class="fu">### step 4: 求出系数的标准误</span></span>
-<span id="cb37-126"><a href="#cb37-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-127"><a href="#cb37-127" aria-hidden="true" tabindex="-1"></a>感觉这一部分的可拓展性比较强，在不同的假设下（同方差、异方差等），系数的标准误不同。这次先假设同方差且无自相关（球星扰动项）。</span>
-<span id="cb37-128"><a href="#cb37-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-129"><a href="#cb37-129" aria-hidden="true" tabindex="-1"></a>求一下自由度</span>
-<span id="cb37-130"><a href="#cb37-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-133"><a href="#cb37-133" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-134"><a href="#cb37-134" aria-hidden="true" tabindex="-1"></a>get_freedom <span class="ot">&lt;-</span> <span class="cf">function</span>(X) {</span>
-<span id="cb37-135"><a href="#cb37-135" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>(X) <span class="sc">-</span> <span class="fu">ncol</span>(X)</span>
-<span id="cb37-136"><a href="#cb37-136" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-137"><a href="#cb37-137" aria-hidden="true" tabindex="-1"></a>freedom <span class="ot">&lt;-</span> <span class="fu">get_freedom</span>(X)</span>
-<span id="cb37-138"><a href="#cb37-138" aria-hidden="true" tabindex="-1"></a>freedom</span>
-<span id="cb37-139"><a href="#cb37-139" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-140"><a href="#cb37-140" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-143"><a href="#cb37-143" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-144"><a href="#cb37-144" aria-hidden="true" tabindex="-1"></a>get_err_sepherical <span class="ot">&lt;-</span> <span class="cf">function</span>(err_vec) {</span>
-<span id="cb37-145"><a href="#cb37-145" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.numeric</span>(<span class="fu">crossprod</span>(err_vec, err_vec) <span class="sc">/</span> freedom)</span>
-<span id="cb37-146"><a href="#cb37-146" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-147"><a href="#cb37-147" aria-hidden="true" tabindex="-1"></a>err <span class="ot">&lt;-</span> <span class="fu">get_err_sepherical</span>(err_vec)</span>
-<span id="cb37-148"><a href="#cb37-148" aria-hidden="true" tabindex="-1"></a>err</span>
-<span id="cb37-149"><a href="#cb37-149" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-150"><a href="#cb37-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-151"><a href="#cb37-151" aria-hidden="true" tabindex="-1"></a>球星扰动项假设下，系数的标准误为</span>
-<span id="cb37-152"><a href="#cb37-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-153"><a href="#cb37-153" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb37-154"><a href="#cb37-154" aria-hidden="true" tabindex="-1"></a>\mathbf {\text{SE}(\hat{\beta})} = \mathbf {\sqrt {e^2 (X^T X)^{-1}_{kk}}}</span>
-<span id="cb37-155"><a href="#cb37-155" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb37-156"><a href="#cb37-156" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-157"><a href="#cb37-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-160"><a href="#cb37-160" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-161"><a href="#cb37-161" aria-hidden="true" tabindex="-1"></a>get_beta_se <span class="ot">&lt;-</span> <span class="cf">function</span>(X, err) {</span>
-<span id="cb37-162"><a href="#cb37-162" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sqrt</span>(err <span class="sc">*</span> <span class="fu">diag</span>(<span class="fu">solve</span>(<span class="fu">crossprod</span>(X, X))))</span>
-<span id="cb37-163"><a href="#cb37-163" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-164"><a href="#cb37-164" aria-hidden="true" tabindex="-1"></a>beta_se <span class="ot">&lt;-</span> <span class="fu">get_beta_se</span>(X, err)</span>
-<span id="cb37-165"><a href="#cb37-165" aria-hidden="true" tabindex="-1"></a>beta_se</span>
-<span id="cb37-166"><a href="#cb37-166" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-167"><a href="#cb37-167" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-168"><a href="#cb37-168" aria-hidden="true" tabindex="-1"></a><span class="fu">### step 5: 系数的t检验</span></span>
-<span id="cb37-169"><a href="#cb37-169" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-170"><a href="#cb37-170" aria-hidden="true" tabindex="-1"></a>计算系数的t统计量</span>
-<span id="cb37-171"><a href="#cb37-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-174"><a href="#cb37-174" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-175"><a href="#cb37-175" aria-hidden="true" tabindex="-1"></a>get_beta_t <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, <span class="at">assump =</span> <span class="dv">0</span>) {</span>
-<span id="cb37-176"><a href="#cb37-176" aria-hidden="true" tabindex="-1"></a>  (beta <span class="sc">-</span> assump) <span class="sc">/</span> beta_se</span>
-<span id="cb37-177"><a href="#cb37-177" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-178"><a href="#cb37-178" aria-hidden="true" tabindex="-1"></a>beta_t <span class="ot">&lt;-</span> <span class="fu">get_beta_t</span>(beta)</span>
-<span id="cb37-179"><a href="#cb37-179" aria-hidden="true" tabindex="-1"></a>beta_t</span>
-<span id="cb37-180"><a href="#cb37-180" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-181"><a href="#cb37-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-182"><a href="#cb37-182" aria-hidden="true" tabindex="-1"></a>置信区间</span>
-<span id="cb37-183"><a href="#cb37-183" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-186"><a href="#cb37-186" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-187"><a href="#cb37-187" aria-hidden="true" tabindex="-1"></a>get_conf <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, beta_se, freedom, <span class="at">p =</span> <span class="fl">0.05</span>) {</span>
-<span id="cb37-188"><a href="#cb37-188" aria-hidden="true" tabindex="-1"></a>  beta_lconf <span class="ot">&lt;-</span> beta <span class="sc">+</span> <span class="fu">qt</span>(p, freedom) <span class="sc">*</span> beta_se</span>
-<span id="cb37-189"><a href="#cb37-189" aria-hidden="true" tabindex="-1"></a>  beta_hconf <span class="ot">&lt;-</span> beta <span class="sc">-</span> <span class="fu">qt</span>(p, freedom) <span class="sc">*</span> beta_se</span>
-<span id="cb37-190"><a href="#cb37-190" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(beta_lconf, beta_hconf)</span>
-<span id="cb37-191"><a href="#cb37-191" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-192"><a href="#cb37-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-193"><a href="#cb37-193" aria-hidden="true" tabindex="-1"></a>conf <span class="ot">&lt;-</span> <span class="fu">get_conf</span>(beta, beta_se, freedom)</span>
-<span id="cb37-194"><a href="#cb37-194" aria-hidden="true" tabindex="-1"></a>conf</span>
-<span id="cb37-195"><a href="#cb37-195" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-196"><a href="#cb37-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-197"><a href="#cb37-197" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-198"><a href="#cb37-198" aria-hidden="true" tabindex="-1"></a>p-value</span>
-<span id="cb37-199"><a href="#cb37-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-202"><a href="#cb37-202" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-203"><a href="#cb37-203" aria-hidden="true" tabindex="-1"></a>get_pvalue <span class="ot">&lt;-</span> <span class="cf">function</span>(beta_t, freedom) {</span>
-<span id="cb37-204"><a href="#cb37-204" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pt</span>(<span class="fu">abs</span>(beta_t), freedom)</span>
-<span id="cb37-205"><a href="#cb37-205" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-206"><a href="#cb37-206" aria-hidden="true" tabindex="-1"></a>pvalue <span class="ot">&lt;-</span> <span class="fu">get_pvalue</span>(beta_t, freedom)</span>
-<span id="cb37-207"><a href="#cb37-207" aria-hidden="true" tabindex="-1"></a>pvalue</span>
-<span id="cb37-208"><a href="#cb37-208" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-209"><a href="#cb37-209" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-210"><a href="#cb37-210" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-211"><a href="#cb37-211" aria-hidden="true" tabindex="-1"></a><span class="fu">### step 6: 整理结果</span></span>
-<span id="cb37-212"><a href="#cb37-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-215"><a href="#cb37-215" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-216"><a href="#cb37-216" aria-hidden="true" tabindex="-1"></a>result_df <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(beta,<span class="at">rownames =</span> <span class="st">"term"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb37-217"><a href="#cb37-217" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">estimate =</span> V1) <span class="sc">%&gt;%</span> </span>
-<span id="cb37-218"><a href="#cb37-218" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(<span class="at">low_conf =</span> conf[, <span class="dv">1</span>], <span class="at">high_conf =</span> conf[, <span class="dv">2</span>], <span class="at">p_value =</span> pvalue)</span>
-<span id="cb37-219"><a href="#cb37-219" aria-hidden="true" tabindex="-1"></a>result_df</span>
-<span id="cb37-220"><a href="#cb37-220" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-221"><a href="#cb37-221" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-222"><a href="#cb37-222" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-223"><a href="#cb37-223" aria-hidden="true" tabindex="-1"></a><span class="fu"># 打包成一个函数</span></span>
-<span id="cb37-224"><a href="#cb37-224" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-225"><a href="#cb37-225" aria-hidden="true" tabindex="-1"></a>前面编写的函数有</span>
-<span id="cb37-226"><a href="#cb37-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-229"><a href="#cb37-229" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-230"><a href="#cb37-230" aria-hidden="true" tabindex="-1"></a>get_beta <span class="ot">&lt;-</span> <span class="cf">function</span>(X, Y) {</span>
-<span id="cb37-231"><a href="#cb37-231" aria-hidden="true" tabindex="-1"></a>  <span class="fu">solve</span>(<span class="fu">crossprod</span>(X, X)) <span class="sc">%*%</span> <span class="fu">crossprod</span>(X, Y)</span>
-<span id="cb37-232"><a href="#cb37-232" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-233"><a href="#cb37-233" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-234"><a href="#cb37-234" aria-hidden="true" tabindex="-1"></a>get_fit <span class="ot">&lt;-</span> <span class="cf">function</span>(X, beta) {</span>
-<span id="cb37-235"><a href="#cb37-235" aria-hidden="true" tabindex="-1"></a>  X <span class="sc">%*%</span> beta</span>
-<span id="cb37-236"><a href="#cb37-236" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-237"><a href="#cb37-237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-238"><a href="#cb37-238" aria-hidden="true" tabindex="-1"></a>get_err_vec <span class="ot">&lt;-</span> <span class="cf">function</span>(Y, Y_hat) {</span>
-<span id="cb37-239"><a href="#cb37-239" aria-hidden="true" tabindex="-1"></a>  Y <span class="sc">-</span> Y_hat</span>
-<span id="cb37-240"><a href="#cb37-240" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-241"><a href="#cb37-241" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-242"><a href="#cb37-242" aria-hidden="true" tabindex="-1"></a>get_freedom <span class="ot">&lt;-</span> <span class="cf">function</span>(X) {</span>
-<span id="cb37-243"><a href="#cb37-243" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>(X) <span class="sc">-</span> <span class="fu">ncol</span>(X)</span>
-<span id="cb37-244"><a href="#cb37-244" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-245"><a href="#cb37-245" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-246"><a href="#cb37-246" aria-hidden="true" tabindex="-1"></a>get_err_sepherical <span class="ot">&lt;-</span> <span class="cf">function</span>(err_vec) {</span>
-<span id="cb37-247"><a href="#cb37-247" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.numeric</span>(<span class="fu">crossprod</span>(err_vec, err_vec) <span class="sc">/</span> freedom)</span>
-<span id="cb37-248"><a href="#cb37-248" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-249"><a href="#cb37-249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-250"><a href="#cb37-250" aria-hidden="true" tabindex="-1"></a>get_beta_se <span class="ot">&lt;-</span> <span class="cf">function</span>(X, err) {</span>
-<span id="cb37-251"><a href="#cb37-251" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sqrt</span>(err <span class="sc">*</span> <span class="fu">diag</span>(<span class="fu">solve</span>(<span class="fu">crossprod</span>(X, X))))</span>
-<span id="cb37-252"><a href="#cb37-252" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-253"><a href="#cb37-253" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-254"><a href="#cb37-254" aria-hidden="true" tabindex="-1"></a>get_beta_t <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, <span class="at">assump =</span> <span class="dv">0</span>) {</span>
-<span id="cb37-255"><a href="#cb37-255" aria-hidden="true" tabindex="-1"></a>  (beta <span class="sc">-</span> assump) <span class="sc">/</span> beta_se</span>
-<span id="cb37-256"><a href="#cb37-256" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-257"><a href="#cb37-257" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-258"><a href="#cb37-258" aria-hidden="true" tabindex="-1"></a>get_conf <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, beta_se, freedom, <span class="at">p =</span> <span class="fl">0.05</span>) {</span>
-<span id="cb37-259"><a href="#cb37-259" aria-hidden="true" tabindex="-1"></a>  beta_lconf <span class="ot">&lt;-</span> beta <span class="sc">+</span> <span class="fu">qt</span>(p, freedom) <span class="sc">*</span> beta_se</span>
-<span id="cb37-260"><a href="#cb37-260" aria-hidden="true" tabindex="-1"></a>  beta_hconf <span class="ot">&lt;-</span> beta <span class="sc">-</span> <span class="fu">qt</span>(p, freedom) <span class="sc">*</span> beta_se</span>
-<span id="cb37-261"><a href="#cb37-261" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(beta_lconf, beta_hconf)</span>
-<span id="cb37-262"><a href="#cb37-262" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-263"><a href="#cb37-263" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-264"><a href="#cb37-264" aria-hidden="true" tabindex="-1"></a>get_pvalue <span class="ot">&lt;-</span> <span class="cf">function</span>(beta_t, freedom) {</span>
-<span id="cb37-265"><a href="#cb37-265" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pt</span>(<span class="fu">abs</span>(beta_t), freedom)</span>
-<span id="cb37-266"><a href="#cb37-266" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-267"><a href="#cb37-267" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-268"><a href="#cb37-268" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-269"><a href="#cb37-269" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-270"><a href="#cb37-270" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-271"><a href="#cb37-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-274"><a href="#cb37-274" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-275"><a href="#cb37-275" aria-hidden="true" tabindex="-1"></a>my_lm <span class="ot">&lt;-</span> <span class="cf">function</span>(formula, df) {</span>
-<span id="cb37-276"><a href="#cb37-276" aria-hidden="true" tabindex="-1"></a>  formula <span class="ot">&lt;-</span> y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3</span>
-<span id="cb37-277"><a href="#cb37-277" aria-hidden="true" tabindex="-1"></a>  df_model <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(formula, df)</span>
-<span id="cb37-278"><a href="#cb37-278" aria-hidden="true" tabindex="-1"></a>  X <span class="ot">&lt;-</span> <span class="fu">model.matrix.lm</span>(df_model)</span>
-<span id="cb37-279"><a href="#cb37-279" aria-hidden="true" tabindex="-1"></a>  Y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(df_model)</span>
-<span id="cb37-280"><a href="#cb37-280" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb37-281"><a href="#cb37-281" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">&lt;-</span> <span class="fu">get_beta</span>(X, Y)</span>
-<span id="cb37-282"><a href="#cb37-282" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb37-283"><a href="#cb37-283" aria-hidden="true" tabindex="-1"></a>  Y_hat <span class="ot">&lt;-</span> <span class="fu">get_fit</span>(X, beta)</span>
-<span id="cb37-284"><a href="#cb37-284" aria-hidden="true" tabindex="-1"></a>  err_vec <span class="ot">&lt;-</span> <span class="fu">get_err_vec</span>(Y, Y_hat)</span>
-<span id="cb37-285"><a href="#cb37-285" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb37-286"><a href="#cb37-286" aria-hidden="true" tabindex="-1"></a>  freedom <span class="ot">&lt;-</span> <span class="fu">get_freedom</span>(X)</span>
-<span id="cb37-287"><a href="#cb37-287" aria-hidden="true" tabindex="-1"></a>  err <span class="ot">&lt;-</span> <span class="fu">get_err_sepherical</span>(err_vec)</span>
-<span id="cb37-288"><a href="#cb37-288" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb37-289"><a href="#cb37-289" aria-hidden="true" tabindex="-1"></a>  beta_se <span class="ot">&lt;-</span> <span class="fu">get_beta_se</span>(X, err)</span>
-<span id="cb37-290"><a href="#cb37-290" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb37-291"><a href="#cb37-291" aria-hidden="true" tabindex="-1"></a>  beta_t <span class="ot">&lt;-</span> <span class="fu">get_beta_t</span>(beta)</span>
-<span id="cb37-292"><a href="#cb37-292" aria-hidden="true" tabindex="-1"></a>  <span class="co">#conf &lt;- get_conf(beta, beta_se, freedom)</span></span>
-<span id="cb37-293"><a href="#cb37-293" aria-hidden="true" tabindex="-1"></a>  pvalue <span class="ot">&lt;-</span> <span class="fu">get_pvalue</span>(beta_t, freedom)</span>
-<span id="cb37-294"><a href="#cb37-294" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb37-295"><a href="#cb37-295" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb37-296"><a href="#cb37-296" aria-hidden="true" tabindex="-1"></a>  result_df <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(beta,<span class="at">rownames =</span> <span class="st">"term"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb37-297"><a href="#cb37-297" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">estimate =</span> V1) <span class="sc">%&gt;%</span> </span>
-<span id="cb37-298"><a href="#cb37-298" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_cols</span>(<span class="co">#low_conf = conf[, 1], </span></span>
-<span id="cb37-299"><a href="#cb37-299" aria-hidden="true" tabindex="-1"></a>              <span class="co">#high_conf = conf[, 2], </span></span>
-<span id="cb37-300"><a href="#cb37-300" aria-hidden="true" tabindex="-1"></a>              <span class="at">std_erro =</span> beta_se,</span>
-<span id="cb37-301"><a href="#cb37-301" aria-hidden="true" tabindex="-1"></a>              <span class="at">statistics =</span> beta_t,</span>
-<span id="cb37-302"><a href="#cb37-302" aria-hidden="true" tabindex="-1"></a>              <span class="at">p_value =</span> pvalue)</span>
-<span id="cb37-303"><a href="#cb37-303" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb37-304"><a href="#cb37-304" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(result_df)</span>
-<span id="cb37-305"><a href="#cb37-305" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-306"><a href="#cb37-306" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-307"><a href="#cb37-307" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-308"><a href="#cb37-308" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-311"><a href="#cb37-311" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-312"><a href="#cb37-312" aria-hidden="true" tabindex="-1"></a><span class="fu">my_lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3, df)</span>
-<span id="cb37-313"><a href="#cb37-313" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-314"><a href="#cb37-314" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-315"><a href="#cb37-315" aria-hidden="true" tabindex="-1"></a>对比一下<span class="in">`lm()`</span>的结果</span>
-<span id="cb37-316"><a href="#cb37-316" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-319"><a href="#cb37-319" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-320"><a href="#cb37-320" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3, df) <span class="sc">%&gt;%</span> </span>
-<span id="cb37-321"><a href="#cb37-321" aria-hidden="true" tabindex="-1"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span>
-<span id="cb37-322"><a href="#cb37-322" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<div class="sourceCode" id="cb52" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> 实现简单线性回归</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span><span class="co"> [R, econometrics]</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2024-03-25"</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="an">number-depth:</span><span class="co"> 2</span></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a><span class="an">toc-depth:</span><span class="co"> 3</span></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(hrbrthemes<span class="sc">::</span><span class="fu">theme_ipsum_rc</span>())</span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a>准备花几期时间，自己写代码，实现常用的计量方法。</span>
+<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a>生成模拟数据</span>
+<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-26"><a href="#cb52-26" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-27"><a href="#cb52-27" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">111</span>)</span>
+<span id="cb52-28"><a href="#cb52-28" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span></span>
+<span id="cb52-29"><a href="#cb52-29" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(x) <span class="ot">&lt;-</span> LETTERS[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span>
+<span id="cb52-30"><a href="#cb52-30" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb52-31"><a href="#cb52-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">x1 =</span> <span class="fu">runif</span>(<span class="dv">1000</span>, <span class="sc">-</span><span class="dv">10</span>, <span class="dv">10</span>),</span>
+<span id="cb52-32"><a href="#cb52-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">x2 =</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, <span class="dv">1000</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb52-33"><a href="#cb52-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">x3 =</span> <span class="fu">sample</span>(LETTERS[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="dv">1000</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb52-34"><a href="#cb52-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">error =</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="at">sd =</span> <span class="dv">1000</span>),</span>
+<span id="cb52-35"><a href="#cb52-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> x1 <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> x2 <span class="sc">+</span> x[x3]</span>
+<span id="cb52-36"><a href="#cb52-36" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-37"><a href="#cb52-37" aria-hidden="true" tabindex="-1"></a>df</span>
+<span id="cb52-38"><a href="#cb52-38" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-39"><a href="#cb52-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-40"><a href="#cb52-40" aria-hidden="true" tabindex="-1"></a><span class="fu"># 步骤拆解</span></span>
+<span id="cb52-41"><a href="#cb52-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-42"><a href="#cb52-42" aria-hidden="true" tabindex="-1"></a><span class="fu">### step 1: 根据formula生成矩阵</span></span>
+<span id="cb52-43"><a href="#cb52-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-44"><a href="#cb52-44" aria-hidden="true" tabindex="-1"></a>因为<span class="in">`formula`</span>是R里面一个特殊的<span class="in">`class`</span>，他的具体机制我没弄清楚，所以这一步用R中的<span class="in">`model.matrix.lm()`</span>实现</span>
+<span id="cb52-45"><a href="#cb52-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-48"><a href="#cb52-48" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-49"><a href="#cb52-49" aria-hidden="true" tabindex="-1"></a>formula <span class="ot">&lt;-</span> y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3</span>
+<span id="cb52-50"><a href="#cb52-50" aria-hidden="true" tabindex="-1"></a>df_model <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(formula, df)</span>
+<span id="cb52-51"><a href="#cb52-51" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix.lm</span>(df_model)</span>
+<span id="cb52-52"><a href="#cb52-52" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span>
+<span id="cb52-53"><a href="#cb52-53" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(df_model)</span>
+<span id="cb52-54"><a href="#cb52-54" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(Y)</span>
+<span id="cb52-55"><a href="#cb52-55" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-56"><a href="#cb52-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-57"><a href="#cb52-57" aria-hidden="true" tabindex="-1"></a><span class="fu">### step 2: 得到回归系数</span></span>
+<span id="cb52-58"><a href="#cb52-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-59"><a href="#cb52-59" aria-hidden="true" tabindex="-1"></a>假设对于总体数据来说：</span>
+<span id="cb52-60"><a href="#cb52-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-61"><a href="#cb52-61" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-62"><a href="#cb52-62" aria-hidden="true" tabindex="-1"></a>\mathbf Y = \mathbf X \boldsymbol \beta + \boldsymbol \epsilon</span>
+<span id="cb52-63"><a href="#cb52-63" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-64"><a href="#cb52-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-65"><a href="#cb52-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-66"><a href="#cb52-66" aria-hidden="true" tabindex="-1"></a>但是我们得到的拟合方程是：</span>
+<span id="cb52-67"><a href="#cb52-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-68"><a href="#cb52-68" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-69"><a href="#cb52-69" aria-hidden="true" tabindex="-1"></a>\hat{\mathbf Y} = \mathbf X \hat{\boldsymbol \beta}</span>
+<span id="cb52-70"><a href="#cb52-70" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-71"><a href="#cb52-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-72"><a href="#cb52-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-73"><a href="#cb52-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-74"><a href="#cb52-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-75"><a href="#cb52-75" aria-hidden="true" tabindex="-1"></a>且</span>
+<span id="cb52-76"><a href="#cb52-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-77"><a href="#cb52-77" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-78"><a href="#cb52-78" aria-hidden="true" tabindex="-1"></a>\begin{align}</span>
+<span id="cb52-79"><a href="#cb52-79" aria-hidden="true" tabindex="-1"></a>\boldsymbol e &amp;= \mathbf Y - \hat{\mathbf Y} <span class="sc">\\</span></span>
+<span id="cb52-80"><a href="#cb52-80" aria-hidden="true" tabindex="-1"></a>&amp;= \mathbf Y - \mathbf X \hat{\boldsymbol \beta}</span>
+<span id="cb52-81"><a href="#cb52-81" aria-hidden="true" tabindex="-1"></a>\end{align}</span>
+<span id="cb52-82"><a href="#cb52-82" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-83"><a href="#cb52-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-84"><a href="#cb52-84" aria-hidden="true" tabindex="-1"></a>要想使$\mathbf Y - \hat{\mathbf Y}$最小，则$\boldsymbol e$与$\mathbf X$正交，即</span>
+<span id="cb52-85"><a href="#cb52-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-86"><a href="#cb52-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-87"><a href="#cb52-87" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-88"><a href="#cb52-88" aria-hidden="true" tabindex="-1"></a>\begin{align}</span>
+<span id="cb52-89"><a href="#cb52-89" aria-hidden="true" tabindex="-1"></a>&amp;\mathbf {X^T (Y - X\hat{\beta})} = \mathbf {0} <span class="sc">\\</span></span>
+<span id="cb52-90"><a href="#cb52-90" aria-hidden="true" tabindex="-1"></a>&amp;\mathbf {\hat{\beta}} = \mathbf {(X^T X)^{-1}X^{T} Y} </span>
+<span id="cb52-91"><a href="#cb52-91" aria-hidden="true" tabindex="-1"></a>\end{align}</span>
+<span id="cb52-92"><a href="#cb52-92" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-93"><a href="#cb52-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-94"><a href="#cb52-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-97"><a href="#cb52-97" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-98"><a href="#cb52-98" aria-hidden="true" tabindex="-1"></a>get_beta <span class="ot">&lt;-</span> <span class="cf">function</span>(X, Y) {</span>
+<span id="cb52-99"><a href="#cb52-99" aria-hidden="true" tabindex="-1"></a>  <span class="fu">solve</span>(<span class="fu">crossprod</span>(X, X)) <span class="sc">%*%</span> <span class="fu">crossprod</span>(X, Y)</span>
+<span id="cb52-100"><a href="#cb52-100" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-101"><a href="#cb52-101" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">get_beta</span>(X, Y)</span>
+<span id="cb52-102"><a href="#cb52-102" aria-hidden="true" tabindex="-1"></a>beta</span>
+<span id="cb52-103"><a href="#cb52-103" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-104"><a href="#cb52-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-105"><a href="#cb52-105" aria-hidden="true" tabindex="-1"></a><span class="fu">### step 3: 求出拟合值和误差</span></span>
+<span id="cb52-106"><a href="#cb52-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-107"><a href="#cb52-107" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-108"><a href="#cb52-108" aria-hidden="true" tabindex="-1"></a>\begin{align}</span>
+<span id="cb52-109"><a href="#cb52-109" aria-hidden="true" tabindex="-1"></a>\mathbf{\hat{Y}} &amp;= \mathbf{X\hat{\beta}} <span class="sc">\\</span></span>
+<span id="cb52-110"><a href="#cb52-110" aria-hidden="true" tabindex="-1"></a>\mathbf{e} &amp;= \mathbf{ Y - \hat{Y}}</span>
+<span id="cb52-111"><a href="#cb52-111" aria-hidden="true" tabindex="-1"></a>\end{align}</span>
+<span id="cb52-112"><a href="#cb52-112" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-113"><a href="#cb52-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-116"><a href="#cb52-116" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-117"><a href="#cb52-117" aria-hidden="true" tabindex="-1"></a>get_fit <span class="ot">&lt;-</span> <span class="cf">function</span>(X, beta) {</span>
+<span id="cb52-118"><a href="#cb52-118" aria-hidden="true" tabindex="-1"></a>  X <span class="sc">%*%</span> beta</span>
+<span id="cb52-119"><a href="#cb52-119" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-120"><a href="#cb52-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-121"><a href="#cb52-121" aria-hidden="true" tabindex="-1"></a>Y_hat <span class="ot">&lt;-</span> <span class="fu">get_fit</span>(X, beta)</span>
+<span id="cb52-122"><a href="#cb52-122" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(Y_hat)</span>
+<span id="cb52-123"><a href="#cb52-123" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-124"><a href="#cb52-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-127"><a href="#cb52-127" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-128"><a href="#cb52-128" aria-hidden="true" tabindex="-1"></a>get_residual <span class="ot">&lt;-</span> <span class="cf">function</span>(Y, Y_hat) {</span>
+<span id="cb52-129"><a href="#cb52-129" aria-hidden="true" tabindex="-1"></a>  Y <span class="sc">-</span> Y_hat</span>
+<span id="cb52-130"><a href="#cb52-130" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-131"><a href="#cb52-131" aria-hidden="true" tabindex="-1"></a>residual <span class="ot">&lt;-</span> <span class="fu">get_residual</span>(Y, Y_hat)</span>
+<span id="cb52-132"><a href="#cb52-132" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(residual)</span>
+<span id="cb52-133"><a href="#cb52-133" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-134"><a href="#cb52-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-135"><a href="#cb52-135" aria-hidden="true" tabindex="-1"></a><span class="fu">### step 4: 求出系数的标准误</span></span>
+<span id="cb52-136"><a href="#cb52-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-137"><a href="#cb52-137" aria-hidden="true" tabindex="-1"></a>感觉这一部分的可拓展性比较强，在不同的假设下（同方差、异方差等），系数的标准误不同。这次先假设同方差且无自相关（球星扰动项）。</span>
+<span id="cb52-138"><a href="#cb52-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-139"><a href="#cb52-139" aria-hidden="true" tabindex="-1"></a>求一下自由度</span>
+<span id="cb52-140"><a href="#cb52-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-143"><a href="#cb52-143" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-144"><a href="#cb52-144" aria-hidden="true" tabindex="-1"></a>get_freedom <span class="ot">&lt;-</span> <span class="cf">function</span>(X) {</span>
+<span id="cb52-145"><a href="#cb52-145" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>(X) <span class="sc">-</span> <span class="fu">ncol</span>(X)</span>
+<span id="cb52-146"><a href="#cb52-146" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-147"><a href="#cb52-147" aria-hidden="true" tabindex="-1"></a>freedom <span class="ot">&lt;-</span> <span class="fu">get_freedom</span>(X)</span>
+<span id="cb52-148"><a href="#cb52-148" aria-hidden="true" tabindex="-1"></a>freedom</span>
+<span id="cb52-149"><a href="#cb52-149" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-150"><a href="#cb52-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-153"><a href="#cb52-153" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-154"><a href="#cb52-154" aria-hidden="true" tabindex="-1"></a>get_var_sepherical <span class="ot">&lt;-</span> <span class="cf">function</span>(residual, freedom) {</span>
+<span id="cb52-155"><a href="#cb52-155" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.numeric</span>(<span class="fu">crossprod</span>(residual, residual) <span class="sc">/</span> freedom)</span>
+<span id="cb52-156"><a href="#cb52-156" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-157"><a href="#cb52-157" aria-hidden="true" tabindex="-1"></a>residual_var <span class="ot">&lt;-</span> <span class="fu">get_var_sepherical</span>(residual, freedom)</span>
+<span id="cb52-158"><a href="#cb52-158" aria-hidden="true" tabindex="-1"></a>residual_var</span>
+<span id="cb52-159"><a href="#cb52-159" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-160"><a href="#cb52-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-161"><a href="#cb52-161" aria-hidden="true" tabindex="-1"></a>球星扰动项假设下，系数的标准误为</span>
+<span id="cb52-162"><a href="#cb52-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-163"><a href="#cb52-163" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-164"><a href="#cb52-164" aria-hidden="true" tabindex="-1"></a>\mathbf {\text{SE}(\hat{\beta})} = \mathbf {\sqrt {\text{Var}(e) (X^T X)^{-1}_{kk}}}</span>
+<span id="cb52-165"><a href="#cb52-165" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb52-166"><a href="#cb52-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-167"><a href="#cb52-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-170"><a href="#cb52-170" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-171"><a href="#cb52-171" aria-hidden="true" tabindex="-1"></a>get_beta_se <span class="ot">&lt;-</span> <span class="cf">function</span>(X, residual_var) {</span>
+<span id="cb52-172"><a href="#cb52-172" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sqrt</span>(residual_var <span class="sc">*</span> <span class="fu">diag</span>(<span class="fu">solve</span>(<span class="fu">crossprod</span>(X, X))))</span>
+<span id="cb52-173"><a href="#cb52-173" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-174"><a href="#cb52-174" aria-hidden="true" tabindex="-1"></a>beta_se <span class="ot">&lt;-</span> <span class="fu">get_beta_se</span>(X, residual_var)</span>
+<span id="cb52-175"><a href="#cb52-175" aria-hidden="true" tabindex="-1"></a>beta_se</span>
+<span id="cb52-176"><a href="#cb52-176" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-177"><a href="#cb52-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-178"><a href="#cb52-178" aria-hidden="true" tabindex="-1"></a><span class="fu">### step 5: 系数的t检验</span></span>
+<span id="cb52-179"><a href="#cb52-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-180"><a href="#cb52-180" aria-hidden="true" tabindex="-1"></a>计算系数的t统计量</span>
+<span id="cb52-181"><a href="#cb52-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-184"><a href="#cb52-184" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-185"><a href="#cb52-185" aria-hidden="true" tabindex="-1"></a>get_beta_t <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, beta_se, <span class="at">assump =</span> <span class="dv">0</span>) {</span>
+<span id="cb52-186"><a href="#cb52-186" aria-hidden="true" tabindex="-1"></a>  (beta <span class="sc">-</span> assump) <span class="sc">/</span> beta_se</span>
+<span id="cb52-187"><a href="#cb52-187" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-188"><a href="#cb52-188" aria-hidden="true" tabindex="-1"></a>beta_t <span class="ot">&lt;-</span> <span class="fu">get_beta_t</span>(beta, beta_se)</span>
+<span id="cb52-189"><a href="#cb52-189" aria-hidden="true" tabindex="-1"></a>beta_t</span>
+<span id="cb52-190"><a href="#cb52-190" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-191"><a href="#cb52-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-192"><a href="#cb52-192" aria-hidden="true" tabindex="-1"></a>置信区间</span>
+<span id="cb52-193"><a href="#cb52-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-196"><a href="#cb52-196" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-197"><a href="#cb52-197" aria-hidden="true" tabindex="-1"></a>get_conf <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, beta_se, freedom, <span class="at">p =</span> <span class="fl">0.05</span>) {</span>
+<span id="cb52-198"><a href="#cb52-198" aria-hidden="true" tabindex="-1"></a>  beta_lconf <span class="ot">&lt;-</span> beta <span class="sc">+</span> <span class="fu">qt</span>(p, freedom) <span class="sc">*</span> beta_se</span>
+<span id="cb52-199"><a href="#cb52-199" aria-hidden="true" tabindex="-1"></a>  beta_hconf <span class="ot">&lt;-</span> beta <span class="sc">-</span> <span class="fu">qt</span>(p, freedom) <span class="sc">*</span> beta_se</span>
+<span id="cb52-200"><a href="#cb52-200" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(beta_lconf, beta_hconf)</span>
+<span id="cb52-201"><a href="#cb52-201" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-202"><a href="#cb52-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-203"><a href="#cb52-203" aria-hidden="true" tabindex="-1"></a>conf <span class="ot">&lt;-</span> <span class="fu">get_conf</span>(beta, beta_se, freedom)</span>
+<span id="cb52-204"><a href="#cb52-204" aria-hidden="true" tabindex="-1"></a>conf</span>
+<span id="cb52-205"><a href="#cb52-205" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-206"><a href="#cb52-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-207"><a href="#cb52-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-208"><a href="#cb52-208" aria-hidden="true" tabindex="-1"></a>p-value</span>
+<span id="cb52-209"><a href="#cb52-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-212"><a href="#cb52-212" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-213"><a href="#cb52-213" aria-hidden="true" tabindex="-1"></a>get_pvalue <span class="ot">&lt;-</span> <span class="cf">function</span>(beta_t, freedom) {</span>
+<span id="cb52-214"><a href="#cb52-214" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pt</span>(<span class="fu">abs</span>(beta_t), freedom)</span>
+<span id="cb52-215"><a href="#cb52-215" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-216"><a href="#cb52-216" aria-hidden="true" tabindex="-1"></a>pvalue <span class="ot">&lt;-</span> <span class="fu">get_pvalue</span>(beta_t, freedom)</span>
+<span id="cb52-217"><a href="#cb52-217" aria-hidden="true" tabindex="-1"></a>pvalue</span>
+<span id="cb52-218"><a href="#cb52-218" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-219"><a href="#cb52-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-220"><a href="#cb52-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-221"><a href="#cb52-221" aria-hidden="true" tabindex="-1"></a><span class="fu">### step 6: 整理结果</span></span>
+<span id="cb52-222"><a href="#cb52-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-225"><a href="#cb52-225" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-226"><a href="#cb52-226" aria-hidden="true" tabindex="-1"></a>result_df <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(beta, <span class="at">rownames =</span> <span class="st">"term"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb52-227"><a href="#cb52-227" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">estimate =</span> V1) <span class="sc">%&gt;%</span> </span>
+<span id="cb52-228"><a href="#cb52-228" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(<span class="at">std_error =</span> beta_se,</span>
+<span id="cb52-229"><a href="#cb52-229" aria-hidden="true" tabindex="-1"></a>            <span class="at">statistics =</span> beta_t[, <span class="dv">1</span>],</span>
+<span id="cb52-230"><a href="#cb52-230" aria-hidden="true" tabindex="-1"></a>            <span class="at">p_value =</span> pvalue[, <span class="dv">1</span>])</span>
+<span id="cb52-231"><a href="#cb52-231" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-232"><a href="#cb52-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-233"><a href="#cb52-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-234"><a href="#cb52-234" aria-hidden="true" tabindex="-1"></a><span class="fu"># 打包成一个函数</span></span>
+<span id="cb52-235"><a href="#cb52-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-236"><a href="#cb52-236" aria-hidden="true" tabindex="-1"></a>前面编写的函数有</span>
+<span id="cb52-237"><a href="#cb52-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-240"><a href="#cb52-240" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-241"><a href="#cb52-241" aria-hidden="true" tabindex="-1"></a>get_beta <span class="ot">&lt;-</span> <span class="cf">function</span>(X, Y) {</span>
+<span id="cb52-242"><a href="#cb52-242" aria-hidden="true" tabindex="-1"></a>  <span class="fu">solve</span>(<span class="fu">crossprod</span>(X, X)) <span class="sc">%*%</span> <span class="fu">crossprod</span>(X, Y)</span>
+<span id="cb52-243"><a href="#cb52-243" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-244"><a href="#cb52-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-245"><a href="#cb52-245" aria-hidden="true" tabindex="-1"></a>get_fit <span class="ot">&lt;-</span> <span class="cf">function</span>(X, beta) {</span>
+<span id="cb52-246"><a href="#cb52-246" aria-hidden="true" tabindex="-1"></a>  X <span class="sc">%*%</span> beta</span>
+<span id="cb52-247"><a href="#cb52-247" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-248"><a href="#cb52-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-249"><a href="#cb52-249" aria-hidden="true" tabindex="-1"></a>get_residual <span class="ot">&lt;-</span> <span class="cf">function</span>(Y, Y_hat) {</span>
+<span id="cb52-250"><a href="#cb52-250" aria-hidden="true" tabindex="-1"></a>  Y <span class="sc">-</span> Y_hat</span>
+<span id="cb52-251"><a href="#cb52-251" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-252"><a href="#cb52-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-253"><a href="#cb52-253" aria-hidden="true" tabindex="-1"></a>get_freedom <span class="ot">&lt;-</span> <span class="cf">function</span>(X) {</span>
+<span id="cb52-254"><a href="#cb52-254" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>(X) <span class="sc">-</span> <span class="fu">ncol</span>(X)</span>
+<span id="cb52-255"><a href="#cb52-255" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-256"><a href="#cb52-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-257"><a href="#cb52-257" aria-hidden="true" tabindex="-1"></a>get_var_sepherical <span class="ot">&lt;-</span> <span class="cf">function</span>(residual, freedom) {</span>
+<span id="cb52-258"><a href="#cb52-258" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.numeric</span>(<span class="fu">crossprod</span>(residual, residual) <span class="sc">/</span> freedom)</span>
+<span id="cb52-259"><a href="#cb52-259" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-260"><a href="#cb52-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-261"><a href="#cb52-261" aria-hidden="true" tabindex="-1"></a>get_beta_se <span class="ot">&lt;-</span> <span class="cf">function</span>(X, residual) {</span>
+<span id="cb52-262"><a href="#cb52-262" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sqrt</span>(residual <span class="sc">*</span> <span class="fu">diag</span>(<span class="fu">solve</span>(<span class="fu">crossprod</span>(X, X))))</span>
+<span id="cb52-263"><a href="#cb52-263" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-264"><a href="#cb52-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-265"><a href="#cb52-265" aria-hidden="true" tabindex="-1"></a>get_beta_t <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, beta_se, <span class="at">assump =</span> <span class="dv">0</span>) {</span>
+<span id="cb52-266"><a href="#cb52-266" aria-hidden="true" tabindex="-1"></a>  (beta <span class="sc">-</span> assump) <span class="sc">/</span> beta_se</span>
+<span id="cb52-267"><a href="#cb52-267" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-268"><a href="#cb52-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-269"><a href="#cb52-269" aria-hidden="true" tabindex="-1"></a>get_conf <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, beta_se, freedom, <span class="at">p =</span> <span class="fl">0.05</span>) {</span>
+<span id="cb52-270"><a href="#cb52-270" aria-hidden="true" tabindex="-1"></a>  beta_lconf <span class="ot">&lt;-</span> beta <span class="sc">+</span> <span class="fu">qt</span>(p, freedom) <span class="sc">*</span> beta_se</span>
+<span id="cb52-271"><a href="#cb52-271" aria-hidden="true" tabindex="-1"></a>  beta_hconf <span class="ot">&lt;-</span> beta <span class="sc">-</span> <span class="fu">qt</span>(p, freedom) <span class="sc">*</span> beta_se</span>
+<span id="cb52-272"><a href="#cb52-272" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(beta_lconf, beta_hconf)</span>
+<span id="cb52-273"><a href="#cb52-273" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-274"><a href="#cb52-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-275"><a href="#cb52-275" aria-hidden="true" tabindex="-1"></a>get_pvalue <span class="ot">&lt;-</span> <span class="cf">function</span>(beta_t, freedom) {</span>
+<span id="cb52-276"><a href="#cb52-276" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pt</span>(<span class="fu">abs</span>(beta_t), freedom)</span>
+<span id="cb52-277"><a href="#cb52-277" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-278"><a href="#cb52-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-279"><a href="#cb52-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-280"><a href="#cb52-280" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-281"><a href="#cb52-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-282"><a href="#cb52-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-285"><a href="#cb52-285" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-286"><a href="#cb52-286" aria-hidden="true" tabindex="-1"></a>my_lm <span class="ot">&lt;-</span> <span class="cf">function</span>(formula, df) {</span>
+<span id="cb52-287"><a href="#cb52-287" aria-hidden="true" tabindex="-1"></a>  df_model <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(formula, df)</span>
+<span id="cb52-288"><a href="#cb52-288" aria-hidden="true" tabindex="-1"></a>  X <span class="ot">&lt;-</span> <span class="fu">model.matrix.lm</span>(df_model)</span>
+<span id="cb52-289"><a href="#cb52-289" aria-hidden="true" tabindex="-1"></a>  Y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(df_model)</span>
+<span id="cb52-290"><a href="#cb52-290" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-291"><a href="#cb52-291" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">&lt;-</span> <span class="fu">get_beta</span>(X, Y)</span>
+<span id="cb52-292"><a href="#cb52-292" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-293"><a href="#cb52-293" aria-hidden="true" tabindex="-1"></a>  Y_hat <span class="ot">&lt;-</span> <span class="fu">get_fit</span>(X, beta)</span>
+<span id="cb52-294"><a href="#cb52-294" aria-hidden="true" tabindex="-1"></a>  residual <span class="ot">&lt;-</span> <span class="fu">get_residual</span>(Y, Y_hat)</span>
+<span id="cb52-295"><a href="#cb52-295" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-296"><a href="#cb52-296" aria-hidden="true" tabindex="-1"></a>  freedom <span class="ot">&lt;-</span> <span class="fu">get_freedom</span>(X)</span>
+<span id="cb52-297"><a href="#cb52-297" aria-hidden="true" tabindex="-1"></a>  residual_var <span class="ot">&lt;-</span> <span class="fu">get_var_sepherical</span>(residual, freedom)</span>
+<span id="cb52-298"><a href="#cb52-298" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-299"><a href="#cb52-299" aria-hidden="true" tabindex="-1"></a>  beta_se <span class="ot">&lt;-</span> <span class="fu">get_beta_se</span>(X, residual_var)</span>
+<span id="cb52-300"><a href="#cb52-300" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-301"><a href="#cb52-301" aria-hidden="true" tabindex="-1"></a>  beta_t <span class="ot">&lt;-</span> <span class="fu">get_beta_t</span>(beta, beta_se)</span>
+<span id="cb52-302"><a href="#cb52-302" aria-hidden="true" tabindex="-1"></a>  <span class="co">#conf &lt;- get_conf(beta, beta_se, freedom)</span></span>
+<span id="cb52-303"><a href="#cb52-303" aria-hidden="true" tabindex="-1"></a>  pvalue <span class="ot">&lt;-</span> <span class="fu">get_pvalue</span>(beta_t, freedom)</span>
+<span id="cb52-304"><a href="#cb52-304" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-305"><a href="#cb52-305" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-306"><a href="#cb52-306" aria-hidden="true" tabindex="-1"></a>  result_df <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(beta,<span class="at">rownames =</span> <span class="st">"term"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb52-307"><a href="#cb52-307" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">estimate =</span> V1) <span class="sc">%&gt;%</span> </span>
+<span id="cb52-308"><a href="#cb52-308" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_cols</span>(<span class="at">std_error =</span> beta_se,</span>
+<span id="cb52-309"><a href="#cb52-309" aria-hidden="true" tabindex="-1"></a>              <span class="at">statistics =</span> beta_t[, <span class="dv">1</span>],</span>
+<span id="cb52-310"><a href="#cb52-310" aria-hidden="true" tabindex="-1"></a>              <span class="at">p_value =</span> pvalue[, <span class="dv">1</span>])</span>
+<span id="cb52-311"><a href="#cb52-311" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-312"><a href="#cb52-312" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(result_df)</span>
+<span id="cb52-313"><a href="#cb52-313" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-314"><a href="#cb52-314" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-315"><a href="#cb52-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-316"><a href="#cb52-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-319"><a href="#cb52-319" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-320"><a href="#cb52-320" aria-hidden="true" tabindex="-1"></a>my_result <span class="ot">&lt;-</span> <span class="fu">my_lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3, <span class="at">df =</span> df)</span>
+<span id="cb52-321"><a href="#cb52-321" aria-hidden="true" tabindex="-1"></a>my_result</span>
+<span id="cb52-322"><a href="#cb52-322" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-323"><a href="#cb52-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-324"><a href="#cb52-324" aria-hidden="true" tabindex="-1"></a>对比一下<span class="in">`lm()`</span>的结果</span>
+<span id="cb52-325"><a href="#cb52-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-328"><a href="#cb52-328" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-329"><a href="#cb52-329" aria-hidden="true" tabindex="-1"></a>lm_result <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3, df) <span class="sc">%&gt;%</span> </span>
+<span id="cb52-330"><a href="#cb52-330" aria-hidden="true" tabindex="-1"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span>
+<span id="cb52-331"><a href="#cb52-331" aria-hidden="true" tabindex="-1"></a>lm_result</span>
+<span id="cb52-332"><a href="#cb52-332" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-333"><a href="#cb52-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-334"><a href="#cb52-334" aria-hidden="true" tabindex="-1"></a>结果看起来不对，但其实是浮点数的数字存储机制造成的，比如</span>
+<span id="cb52-335"><a href="#cb52-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-338"><a href="#cb52-338" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-339"><a href="#cb52-339" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="dv">2</span>) <span class="sc">^</span> <span class="dv">2</span> <span class="sc">==</span> <span class="dv">2</span></span>
+<span id="cb52-340"><a href="#cb52-340" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-341"><a href="#cb52-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-342"><a href="#cb52-342" aria-hidden="true" tabindex="-1"></a>这使应该使用<span class="in">`near()`</span>来判断两个数是否相等</span>
+<span id="cb52-343"><a href="#cb52-343" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-346"><a href="#cb52-346" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-347"><a href="#cb52-347" aria-hidden="true" tabindex="-1"></a><span class="fu">near</span>(<span class="fu">sqrt</span>(<span class="dv">2</span>) <span class="sc">^</span> <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb52-348"><a href="#cb52-348" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-349"><a href="#cb52-349" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-352"><a href="#cb52-352" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-353"><a href="#cb52-353" aria-hidden="true" tabindex="-1"></a><span class="fu">near</span>(my_result<span class="sc">$</span>std_error, lm_result<span class="sc">$</span>std.error)</span>
+<span id="cb52-354"><a href="#cb52-354" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-355"><a href="#cb52-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-356"><a href="#cb52-356" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-359"><a href="#cb52-359" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-360"><a href="#cb52-360" aria-hidden="true" tabindex="-1"></a><span class="fu">near</span>(my_result<span class="sc">$</span>statistics, lm_result<span class="sc">$</span>statistic)</span>
+<span id="cb52-361"><a href="#cb52-361" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-362"><a href="#cb52-362" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-363"><a href="#cb52-363" aria-hidden="true" tabindex="-1"></a><span class="fu"># 使用真实的数据集</span></span>
+<span id="cb52-364"><a href="#cb52-364" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-367"><a href="#cb52-367" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-368"><a href="#cb52-368" aria-hidden="true" tabindex="-1"></a>ChickWeight</span>
+<span id="cb52-369"><a href="#cb52-369" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-370"><a href="#cb52-370" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-373"><a href="#cb52-373" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-374"><a href="#cb52-374" aria-hidden="true" tabindex="-1"></a>mtcars</span>
+<span id="cb52-375"><a href="#cb52-375" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-376"><a href="#cb52-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-379"><a href="#cb52-379" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-380"><a href="#cb52-380" aria-hidden="true" tabindex="-1"></a><span class="fu">my_lm</span>(mpg <span class="sc">~</span> ., mtcars)</span>
+<span id="cb52-381"><a href="#cb52-381" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-382"><a href="#cb52-382" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-385"><a href="#cb52-385" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-386"><a href="#cb52-386" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(mpg <span class="sc">~</span> ., mtcars) <span class="sc">%&gt;%</span> </span>
+<span id="cb52-387"><a href="#cb52-387" aria-hidden="true" tabindex="-1"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span>
+<span id="cb52-388"><a href="#cb52-388" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

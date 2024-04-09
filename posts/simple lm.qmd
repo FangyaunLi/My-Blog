@@ -2,6 +2,8 @@
 title: 实现简单线性回归
 categories: [R, econometrics]
 date: "2024-03-25"
+number-depth: 2
+toc-depth: 3
 ---
 
 ```{r}
@@ -18,6 +20,7 @@ theme_set(hrbrthemes::theme_ipsum_rc())
 生成模拟数据
 
 ```{r}
+set.seed(111)
 x <- 1:4
 names(x) <- LETTERS[1:4]
 df <- tibble(
@@ -78,7 +81,7 @@ $$
 $$
 \begin{align}
 &\mathbf {X^T (Y - X\hat{\beta})} = \mathbf {0} \\
-&\mathbf {\hat{\beta}} = \mathbf {(X^T X)^{-1}X^TY} 
+&\mathbf {\hat{\beta}} = \mathbf {(X^T X)^{-1}X^{T} Y} 
 \end{align}
 $$
 
@@ -93,6 +96,13 @@ beta
 
 ### step 3: 求出拟合值和误差
 
+$$
+\begin{align}
+\mathbf{\hat{Y}} &= \mathbf{X\hat{\beta}} \\
+\mathbf{e} &= \mathbf{ Y - \hat{Y}}
+\end{align}
+$$
+
 ```{r}
 get_fit <- function(X, beta) {
   X %*% beta
@@ -103,11 +113,11 @@ head(Y_hat)
 ```
 
 ```{r}
-get_err_vec <- function(Y, Y_hat) {
+get_residual <- function(Y, Y_hat) {
   Y - Y_hat
 }
-err_vec <- get_err_vec(Y, Y_hat)
-head(err_vec)
+residual <- get_residual(Y, Y_hat)
+head(residual)
 ```
 
 ### step 4: 求出系数的标准误
@@ -125,25 +135,25 @@ freedom
 ```
 
 ```{r}
-get_err_sepherical <- function(err_vec) {
-  as.numeric(crossprod(err_vec, err_vec) / freedom)
+get_var_sepherical <- function(residual, freedom) {
+  as.numeric(crossprod(residual, residual) / freedom)
 }
-err <- get_err_sepherical(err_vec)
-err
+residual_var <- get_var_sepherical(residual, freedom)
+residual_var
 ```
 
 球星扰动项假设下，系数的标准误为
 
 $$
-\mathbf {\text{SE}(\hat{\beta})} = \mathbf {\sqrt {e^2 (X^T X)^{-1}_{kk}}}
+\mathbf {\text{SE}(\hat{\beta})} = \mathbf {\sqrt {\text{Var}(e) (X^T X)^{-1}_{kk}}}
 $$
 
 
 ```{r}
-get_beta_se <- function(X, err) {
-  sqrt(err * diag(solve(crossprod(X, X))))
+get_beta_se <- function(X, residual_var) {
+  sqrt(residual_var * diag(solve(crossprod(X, X))))
 }
-beta_se <- get_beta_se(X, err)
+beta_se <- get_beta_se(X, residual_var)
 beta_se
 ```
 
@@ -152,10 +162,10 @@ beta_se
 计算系数的t统计量
 
 ```{r}
-get_beta_t <- function(beta, assump = 0) {
+get_beta_t <- function(beta, beta_se, assump = 0) {
   (beta - assump) / beta_se
 }
-beta_t <- get_beta_t(beta)
+beta_t <- get_beta_t(beta, beta_se)
 beta_t
 ```
 
@@ -187,10 +197,11 @@ pvalue
 ### step 6: 整理结果
 
 ```{r}
-result_df <- as_tibble(beta,rownames = "term") %>% 
+result_df <- as_tibble(beta, rownames = "term") %>% 
   rename(estimate = V1) %>% 
-  bind_cols(low_conf = conf[, 1], high_conf = conf[, 2], p_value = pvalue)
-result_df
+  bind_cols(std_error = beta_se,
+            statistics = beta_t[, 1],
+            p_value = pvalue[, 1])
 ```
 
 
@@ -207,7 +218,7 @@ get_fit <- function(X, beta) {
   X %*% beta
 }
 
-get_err_vec <- function(Y, Y_hat) {
+get_residual <- function(Y, Y_hat) {
   Y - Y_hat
 }
 
@@ -215,15 +226,15 @@ get_freedom <- function(X) {
   nrow(X) - ncol(X)
 }
 
-get_err_sepherical <- function(err_vec) {
-  as.numeric(crossprod(err_vec, err_vec) / freedom)
+get_var_sepherical <- function(residual, freedom) {
+  as.numeric(crossprod(residual, residual) / freedom)
 }
 
-get_beta_se <- function(X, err) {
-  sqrt(err * diag(solve(crossprod(X, X))))
+get_beta_se <- function(X, residual) {
+  sqrt(residual * diag(solve(crossprod(X, X))))
 }
 
-get_beta_t <- function(beta, assump = 0) {
+get_beta_t <- function(beta, beta_se, assump = 0) {
   (beta - assump) / beta_se
 }
 
@@ -243,7 +254,6 @@ get_pvalue <- function(beta_t, freedom) {
 
 ```{r}
 my_lm <- function(formula, df) {
-  formula <- y ~ x1 + x2 + x3
   df_model <- model.frame(formula, df)
   X <- model.matrix.lm(df_model)
   Y <- model.response(df_model)
@@ -251,25 +261,23 @@ my_lm <- function(formula, df) {
   beta <- get_beta(X, Y)
   
   Y_hat <- get_fit(X, beta)
-  err_vec <- get_err_vec(Y, Y_hat)
+  residual <- get_residual(Y, Y_hat)
   
   freedom <- get_freedom(X)
-  err <- get_err_sepherical(err_vec)
+  residual_var <- get_var_sepherical(residual, freedom)
   
-  beta_se <- get_beta_se(X, err)
+  beta_se <- get_beta_se(X, residual_var)
   
-  beta_t <- get_beta_t(beta)
+  beta_t <- get_beta_t(beta, beta_se)
   #conf <- get_conf(beta, beta_se, freedom)
   pvalue <- get_pvalue(beta_t, freedom)
   
   
   result_df <- as_tibble(beta,rownames = "term") %>% 
     rename(estimate = V1) %>% 
-    bind_cols(#low_conf = conf[, 1], 
-              #high_conf = conf[, 2], 
-              std_erro = beta_se,
-              statistics = beta_t,
-              p_value = pvalue)
+    bind_cols(std_error = beta_se,
+              statistics = beta_t[, 1],
+              p_value = pvalue[, 1])
   
   return(result_df)
 }
@@ -277,13 +285,55 @@ my_lm <- function(formula, df) {
 
 
 ```{r}
-my_lm(y ~ x1 + x2 + x3, df)
+my_result <- my_lm(y ~ x1 + x2 + x3, df = df)
+my_result
 ```
 
 对比一下`lm()`的结果
 
 ```{r}
-lm(y ~ x1 + x2 + x3, df) %>% 
+lm_result <- lm(y ~ x1 + x2 + x3, df) %>% 
+  broom::tidy()
+lm_result
+```
+
+结果看起来不对，但其实是浮点数的数字存储机制造成的，比如
+
+```{r}
+sqrt(2) ^ 2 == 2
+```
+
+这使应该使用`near()`来判断两个数是否相等
+
+```{r}
+near(sqrt(2) ^ 2, 2)
+```
+
+```{r}
+near(my_result$std_error, lm_result$std.error)
+```
+
+
+```{r}
+near(my_result$statistics, lm_result$statistic)
+```
+
+# 使用真实的数据集
+
+```{r}
+ChickWeight
+```
+
+```{r}
+mtcars
+```
+
+```{r}
+my_lm(mpg ~ ., mtcars)
+```
+
+```{r}
+lm(mpg ~ ., mtcars) %>% 
   broom::tidy()
 ```
 
