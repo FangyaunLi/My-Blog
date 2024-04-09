@@ -122,7 +122,7 @@ head(residual)
 
 ### step 4: 求出系数的标准误
 
-感觉这一部分的可拓展性比较强，在不同的假设下（同方差、异方差等），系数的标准误不同。这次先假设同方差且无自相关（球星扰动项）。
+感觉这一部分的可拓展性比较强，在不同的假设下（同方差、异方差等），系数的标准误不同。这次先假设同方差且无自相关（球形扰动项）。
 
 求一下自由度
 
@@ -142,7 +142,7 @@ residual_var <- get_var_sepherical(residual, freedom)
 residual_var
 ```
 
-球星扰动项假设下，系数的标准误为
+球形扰动项假设下，系数的标准误为
 
 $$
 \mathbf {\text{SE}(\hat{\beta})} = \mathbf {\sqrt {\text{Var}(e) (X^T X)^{-1}_{kk}}}
@@ -157,9 +157,13 @@ beta_se <- get_beta_se(X, residual_var)
 beta_se
 ```
 
-### step 5: 系数的t检验
+### step 5: 系数的t值和p值
 
-计算系数的t统计量
+计算系数的t值
+
+$$
+t_k = \frac{\hat{\beta_k} - \beta_k}{ \text{SE}(\hat{ \beta_k}) }
+$$
 
 ```{r}
 get_beta_t <- function(beta, beta_se, assump = 0) {
@@ -171,10 +175,16 @@ beta_t
 
 置信区间
 
+$$
+[\hat{\beta_k} - t_{\frac{\alpha}{2}} \text{SE}(\hat{ \beta_k}),  
+\hat{\beta_k} + t_{\frac{\alpha}{2}} \text{SE}(\hat{ \beta_k})]
+$$
+
+
 ```{r}
 get_conf <- function(beta, beta_se, freedom, p = 0.05) {
-  beta_lconf <- beta + qt(p, freedom) * beta_se
-  beta_hconf <- beta - qt(p, freedom) * beta_se
+  beta_lconf <- beta + qt(p/2, freedom) * beta_se
+  beta_hconf <- beta - qt(p/2, freedom) * beta_se
   cbind(beta_lconf, beta_hconf)
 }
 
@@ -183,11 +193,15 @@ conf
 ```
 
 
-p-value
+系数的p-value
+
+$$
+p = P(|T| > |t_k|)
+$$
 
 ```{r}
 get_pvalue <- function(beta_t, freedom) {
-  1 - pt(abs(beta_t), freedom)
+  2 * pt(abs(beta_t), df = freedom, lower.tail = FALSE)
 }
 pvalue <- get_pvalue(beta_t, freedom)
 pvalue
@@ -239,18 +253,19 @@ get_beta_t <- function(beta, beta_se, assump = 0) {
 }
 
 get_conf <- function(beta, beta_se, freedom, p = 0.05) {
-  beta_lconf <- beta + qt(p, freedom) * beta_se
-  beta_hconf <- beta - qt(p, freedom) * beta_se
+  beta_lconf <- beta + qt(p/2, freedom) * beta_se
+  beta_hconf <- beta - qt(p/2, freedom) * beta_se
   cbind(beta_lconf, beta_hconf)
 }
 
 get_pvalue <- function(beta_t, freedom) {
-  1 - pt(abs(beta_t), freedom)
+  2 * pt(abs(beta_t), df = freedom, lower.tail = FALSE)
 }
 
 
 ```
 
+将这些函数作为积木拼入一个大函数中
 
 ```{r}
 my_lm <- function(formula, df) {
@@ -303,7 +318,7 @@ lm_result
 sqrt(2) ^ 2 == 2
 ```
 
-这使应该使用`near()`来判断两个数是否相等
+这时应该使用`near()`来判断两个数是否相等
 
 ```{r}
 near(sqrt(2) ^ 2, 2)
@@ -322,9 +337,7 @@ near(my_result$statistics, lm_result$statistic)
 
 # 使用真实的数据集
 
-```{r}
-ChickWeight
-```
+
 
 ```{r}
 mtcars
@@ -339,4 +352,5 @@ lm(mpg ~ ., mtcars) %>%
   broom::tidy()
 ```
 
-这次t值一样，但是p值不同
+这次得到的结果又完全一样。前面t值不同的原因比较复杂，可能是函数运算机制不同。
+
