@@ -289,7 +289,7 @@ my_result <- my_lm(y ~ x1 + x2 + x3, df = df)
 my_result
 ```
 
-对比一下`lm()`的结果
+# 和`lm()`的结果对比
 
 ```{r}
 lm_result <- lm(y ~ x1 + x2 + x3, df) %>% 
@@ -318,6 +318,8 @@ near(my_result$std_error, lm_result$std.error)
 near(my_result$statistics, lm_result$statistic)
 ```
 
+最终得到的t值不同，原因还不清楚。
+
 # 使用真实的数据集
 
 ```{r}
@@ -337,3 +339,4 @@ lm(mpg ~ ., mtcars) %>%
   broom::tidy()
 ```
 
+这次t值一样，但是p值不同

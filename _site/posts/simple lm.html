@@ -194,7 +194,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#step-6-整理结果" id="toc-step-6-整理结果" class="nav-link" data-scroll-target="#step-6-整理结果">step 6: 整理结果</a></li>
   </ul></li>
   <li><a href="#打包成一个函数" id="toc-打包成一个函数" class="nav-link" data-scroll-target="#打包成一个函数"><span class="header-section-number">2</span> 打包成一个函数</a></li>
-  <li><a href="#使用真实的数据集" id="toc-使用真实的数据集" class="nav-link" data-scroll-target="#使用真实的数据集"><span class="header-section-number">3</span> 使用真实的数据集</a></li>
+  <li><a href="#和lm的结果对比" id="toc-和lm的结果对比" class="nav-link" data-scroll-target="#和lm的结果对比"><span class="header-section-number">3</span> 和<code>lm()</code>的结果对比</a></li>
+  <li><a href="#使用真实的数据集" id="toc-使用真实的数据集" class="nav-link" data-scroll-target="#使用真实的数据集"><span class="header-section-number">4</span> 使用真实的数据集</a></li>
   </ul>
 </nav>
     </div>
@@ -549,7 +550,9 @@ x3D            0</code></pre>
 6 x3D             3.00  2.22e-15    1.35e15       0</code></pre>
 </div>
 </div>
-<p>对比一下<code>lm()</code>的结果</p>
+</section>
+<section id="和lm的结果对比" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> 和<code>lm()</code>的结果对比</h1>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>lm_result <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3, df) <span class="sc">%&gt;%</span> </span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -597,9 +600,10 @@ x3D            0</code></pre>
       FALSE       FALSE       FALSE       FALSE       FALSE       FALSE </code></pre>
 </div>
 </div>
+<p>最终得到的t值不同，原因还不清楚。</p>
 </section>
-<section id="使用真实的数据集" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> 使用真实的数据集</h1>
+<section id="使用真实的数据集" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> 使用真实的数据集</h1>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>ChickWeight</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1261,6 +1265,7 @@ Volvo 142E          21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2</code></
 11 carb         -0.199     0.829     -0.241  0.812 </code></pre>
 </div>
 </div>
+<p>这次t值一样，但是p值不同</p>
 
 
 <!-- -->
@@ -1960,7 +1965,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb52-321"><a href="#cb52-321" aria-hidden="true" tabindex="-1"></a>my_result</span>
 <span id="cb52-322"><a href="#cb52-322" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb52-323"><a href="#cb52-323" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-324"><a href="#cb52-324" aria-hidden="true" tabindex="-1"></a>对比一下<span class="in">`lm()`</span>的结果</span>
+<span id="cb52-324"><a href="#cb52-324" aria-hidden="true" tabindex="-1"></a><span class="fu"># 和`lm()`的结果对比</span></span>
 <span id="cb52-325"><a href="#cb52-325" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb52-328"><a href="#cb52-328" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb52-329"><a href="#cb52-329" aria-hidden="true" tabindex="-1"></a>lm_result <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3, df) <span class="sc">%&gt;%</span> </span>
@@ -1989,24 +1994,28 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb52-360"><a href="#cb52-360" aria-hidden="true" tabindex="-1"></a><span class="fu">near</span>(my_result<span class="sc">$</span>statistics, lm_result<span class="sc">$</span>statistic)</span>
 <span id="cb52-361"><a href="#cb52-361" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb52-362"><a href="#cb52-362" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-363"><a href="#cb52-363" aria-hidden="true" tabindex="-1"></a><span class="fu"># 使用真实的数据集</span></span>
+<span id="cb52-363"><a href="#cb52-363" aria-hidden="true" tabindex="-1"></a>最终得到的t值不同，原因还不清楚。</span>
 <span id="cb52-364"><a href="#cb52-364" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-367"><a href="#cb52-367" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb52-368"><a href="#cb52-368" aria-hidden="true" tabindex="-1"></a>ChickWeight</span>
-<span id="cb52-369"><a href="#cb52-369" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb52-370"><a href="#cb52-370" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-373"><a href="#cb52-373" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb52-374"><a href="#cb52-374" aria-hidden="true" tabindex="-1"></a>mtcars</span>
-<span id="cb52-375"><a href="#cb52-375" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb52-376"><a href="#cb52-376" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-379"><a href="#cb52-379" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb52-380"><a href="#cb52-380" aria-hidden="true" tabindex="-1"></a><span class="fu">my_lm</span>(mpg <span class="sc">~</span> ., mtcars)</span>
-<span id="cb52-381"><a href="#cb52-381" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb52-382"><a href="#cb52-382" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-385"><a href="#cb52-385" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb52-386"><a href="#cb52-386" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(mpg <span class="sc">~</span> ., mtcars) <span class="sc">%&gt;%</span> </span>
-<span id="cb52-387"><a href="#cb52-387" aria-hidden="true" tabindex="-1"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span>
-<span id="cb52-388"><a href="#cb52-388" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-365"><a href="#cb52-365" aria-hidden="true" tabindex="-1"></a><span class="fu"># 使用真实的数据集</span></span>
+<span id="cb52-366"><a href="#cb52-366" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-369"><a href="#cb52-369" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-370"><a href="#cb52-370" aria-hidden="true" tabindex="-1"></a>ChickWeight</span>
+<span id="cb52-371"><a href="#cb52-371" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-372"><a href="#cb52-372" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-375"><a href="#cb52-375" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-376"><a href="#cb52-376" aria-hidden="true" tabindex="-1"></a>mtcars</span>
+<span id="cb52-377"><a href="#cb52-377" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-378"><a href="#cb52-378" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-381"><a href="#cb52-381" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-382"><a href="#cb52-382" aria-hidden="true" tabindex="-1"></a><span class="fu">my_lm</span>(mpg <span class="sc">~</span> ., mtcars)</span>
+<span id="cb52-383"><a href="#cb52-383" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-384"><a href="#cb52-384" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-387"><a href="#cb52-387" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-388"><a href="#cb52-388" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(mpg <span class="sc">~</span> ., mtcars) <span class="sc">%&gt;%</span> </span>
+<span id="cb52-389"><a href="#cb52-389" aria-hidden="true" tabindex="-1"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span>
+<span id="cb52-390"><a href="#cb52-390" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-391"><a href="#cb52-391" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-392"><a href="#cb52-392" aria-hidden="true" tabindex="-1"></a>这次t值一样，但是p值不同</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
