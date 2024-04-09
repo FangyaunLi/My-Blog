@@ -6,7 +6,6 @@ date: "2024-03-10"
 
 游戏的设定是四个人A，B，C，D站在四个角，A追B，B追C，C追D，D追A。高数里面好像经常有类似的题目，今天用代码来模拟一下。
 
-
 ```{r}
 #| label: setup
 #| message: false
@@ -87,4 +86,3 @@ dt %>%
   scale_color_viridis_c(option = "C", end = 0.8, begin = 0.4) +
   theme_minimal()
 ```
-

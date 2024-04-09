@@ -1,0 +1,289 @@
+---
+title: 实现简单线性回归
+categories: [R, econometrics]
+date: "2024-03-25"
+---
+
+```{r}
+#| message: false
+#| label: setup
+
+library(tidyverse)
+theme_set(hrbrthemes::theme_ipsum_rc())
+```
+
+
+准备花几期时间，自己写代码，实现常用的计量方法。
+
+生成模拟数据
+
+```{r}
+x <- 1:4
+names(x) <- LETTERS[1:4]
+df <- tibble(
+  x1 = runif(1000, -10, 10),
+  x2 = sample(1:20, 1000, replace = TRUE),
+  x3 = sample(LETTERS[1:4], 1000, replace = TRUE),
+  error = rnorm(1000, sd = 1000),
+  y = 1 + 2 * x1 + 3 * x2 + x[x3]
+)
+df
+```
+
+# 步骤拆解
+
+### step 1: 根据formula生成矩阵
+
+因为`formula`是R里面一个特殊的`class`，他的具体机制我没弄清楚，所以这一步用R中的`model.matrix.lm()`实现
+
+```{r}
+formula <- y ~ x1 + x2 + x3
+df_model <- model.frame(formula, df)
+X <- model.matrix.lm(df_model)
+head(X)
+Y <- model.response(df_model)
+head(Y)
+```
+
+### step 2: 得到回归系数
+
+假设对于总体数据来说：
+
+$$
+\mathbf Y = \mathbf X \boldsymbol \beta + \boldsymbol \epsilon
+$$
+
+
+但是我们得到的拟合方程是：
+
+$$
+\hat{\mathbf Y} = \mathbf X \hat{\boldsymbol \beta}
+$$
+
+
+
+
+且
+
+$$
+\begin{align}
+\boldsymbol e &= \mathbf Y - \hat{\mathbf Y} \\
+&= \mathbf Y - \mathbf X \hat{\boldsymbol \beta}
+\end{align}
+$$
+
+要想使$\mathbf Y - \hat{\mathbf Y}$最小，则$\boldsymbol e$与$\mathbf X$正交，即
+
+
+$$
+\begin{align}
+&\mathbf {X^T (Y - X\hat{\beta})} = \mathbf {0} \\
+&\mathbf {\hat{\beta}} = \mathbf {(X^T X)^{-1}X^TY} 
+\end{align}
+$$
+
+
+```{r}
+get_beta <- function(X, Y) {
+  solve(crossprod(X, X)) %*% crossprod(X, Y)
+}
+beta <- get_beta(X, Y)
+beta
+```
+
+### step 3: 求出拟合值和误差
+
+```{r}
+get_fit <- function(X, beta) {
+  X %*% beta
+}
+
+Y_hat <- get_fit(X, beta)
+head(Y_hat)
+```
+
+```{r}
+get_err_vec <- function(Y, Y_hat) {
+  Y - Y_hat
+}
+err_vec <- get_err_vec(Y, Y_hat)
+head(err_vec)
+```
+
+### step 4: 求出系数的标准误
+
+感觉这一部分的可拓展性比较强，在不同的假设下（同方差、异方差等），系数的标准误不同。这次先假设同方差且无自相关（球星扰动项）。
+
+求一下自由度
+
+```{r}
+get_freedom <- function(X) {
+  nrow(X) - ncol(X)
+}
+freedom <- get_freedom(X)
+freedom
+```
+
+```{r}
+get_err_sepherical <- function(err_vec) {
+  as.numeric(crossprod(err_vec, err_vec) / freedom)
+}
+err <- get_err_sepherical(err_vec)
+err
+```
+
+球星扰动项假设下，系数的标准误为
+
+$$
+\mathbf {\text{SE}(\hat{\beta})} = \mathbf {\sqrt {e^2 (X^T X)^{-1}_{kk}}}
+$$
+
+
+```{r}
+get_beta_se <- function(X, err) {
+  sqrt(err * diag(solve(crossprod(X, X))))
+}
+beta_se <- get_beta_se(X, err)
+beta_se
+```
+
+### step 5: 系数的t检验
+
+计算系数的t统计量
+
+```{r}
+get_beta_t <- function(beta, assump = 0) {
+  (beta - assump) / beta_se
+}
+beta_t <- get_beta_t(beta)
+beta_t
+```
+
+置信区间
+
+```{r}
+get_conf <- function(beta, beta_se, freedom, p = 0.05) {
+  beta_lconf <- beta + qt(p, freedom) * beta_se
+  beta_hconf <- beta - qt(p, freedom) * beta_se
+  cbind(beta_lconf, beta_hconf)
+}
+
+conf <- get_conf(beta, beta_se, freedom)
+conf
+```
+
+
+p-value
+
+```{r}
+get_pvalue <- function(beta_t, freedom) {
+  1 - pt(abs(beta_t), freedom)
+}
+pvalue <- get_pvalue(beta_t, freedom)
+pvalue
+```
+
+
+### step 6: 整理结果
+
+```{r}
+result_df <- as_tibble(beta,rownames = "term") %>% 
+  rename(estimate = V1) %>% 
+  bind_cols(low_conf = conf[, 1], high_conf = conf[, 2], p_value = pvalue)
+result_df
+```
+
+
+# 打包成一个函数
+
+前面编写的函数有
+
+```{r}
+get_beta <- function(X, Y) {
+  solve(crossprod(X, X)) %*% crossprod(X, Y)
+}
+
+get_fit <- function(X, beta) {
+  X %*% beta
+}
+
+get_err_vec <- function(Y, Y_hat) {
+  Y - Y_hat
+}
+
+get_freedom <- function(X) {
+  nrow(X) - ncol(X)
+}
+
+get_err_sepherical <- function(err_vec) {
+  as.numeric(crossprod(err_vec, err_vec) / freedom)
+}
+
+get_beta_se <- function(X, err) {
+  sqrt(err * diag(solve(crossprod(X, X))))
+}
+
+get_beta_t <- function(beta, assump = 0) {
+  (beta - assump) / beta_se
+}
+
+get_conf <- function(beta, beta_se, freedom, p = 0.05) {
+  beta_lconf <- beta + qt(p, freedom) * beta_se
+  beta_hconf <- beta - qt(p, freedom) * beta_se
+  cbind(beta_lconf, beta_hconf)
+}
+
+get_pvalue <- function(beta_t, freedom) {
+  1 - pt(abs(beta_t), freedom)
+}
+
+
+```
+
+
+```{r}
+my_lm <- function(formula, df) {
+  formula <- y ~ x1 + x2 + x3
+  df_model <- model.frame(formula, df)
+  X <- model.matrix.lm(df_model)
+  Y <- model.response(df_model)
+  
+  beta <- get_beta(X, Y)
+  
+  Y_hat <- get_fit(X, beta)
+  err_vec <- get_err_vec(Y, Y_hat)
+  
+  freedom <- get_freedom(X)
+  err <- get_err_sepherical(err_vec)
+  
+  beta_se <- get_beta_se(X, err)
+  
+  beta_t <- get_beta_t(beta)
+  #conf <- get_conf(beta, beta_se, freedom)
+  pvalue <- get_pvalue(beta_t, freedom)
+  
+  
+  result_df <- as_tibble(beta,rownames = "term") %>% 
+    rename(estimate = V1) %>% 
+    bind_cols(#low_conf = conf[, 1], 
+              #high_conf = conf[, 2], 
+              std_erro = beta_se,
+              statistics = beta_t,
+              p_value = pvalue)
+  
+  return(result_df)
+}
+```
+
+
+```{r}
+my_lm(y ~ x1 + x2 + x3, df)
+```
+
+对比一下`lm()`的结果
+
+```{r}
+lm(y ~ x1 + x2 + x3, df) %>% 
+  broom::tidy()
+```
+
