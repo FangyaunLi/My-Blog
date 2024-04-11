@@ -78,7 +78,7 @@ recruitment <- do.call(what = bind_rows, args = tbls)
 recruitment
 ```
 
-
+数据的提取到这里就完成了，可以进行下一步的分析，或者将数据导出成excel。
 
 
 
