@@ -1,7 +1,8 @@
 ---
 title: 实现简单线性回归
 categories: [R, econometrics]
-date: "2024-03-25"
+date: "2024-04-09"
+date-modified: "`r Sys.Date()`"
 number-depth: 2
 toc-depth: 3
 ---
