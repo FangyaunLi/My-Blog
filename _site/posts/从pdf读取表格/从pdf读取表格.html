@@ -427,7 +427,7 @@ Table 27
 <p>这里我们的pdf有27页，每页的表格都是固定的表头，可以用<code>docx_extract_all_tbls()</code>提取全部表格再按行合并。</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>tbls <span class="ot">&lt;-</span> <span class="fu">docx_extract_all_tbls</span>(docs)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>recruitment <span class="ot">&lt;-</span> <span class="fu">do.call</span>(<span class="at">what =</span> bind_rows, <span class="at">args =</span> tbls)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>recruitment <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(tbls)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>recruitment</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 164 × 11
@@ -933,7 +933,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a>tbls <span class="ot">&lt;-</span> <span class="fu">docx_extract_all_tbls</span>(docs)</span>
-<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a>recruitment <span class="ot">&lt;-</span> <span class="fu">do.call</span>(<span class="at">what =</span> bind_rows, <span class="at">args =</span> tbls)</span>
+<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a>recruitment <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(tbls)</span>
 <span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a>recruitment</span>
 <span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a></span>

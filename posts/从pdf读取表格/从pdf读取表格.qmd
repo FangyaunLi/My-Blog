@@ -74,7 +74,7 @@ docx_extract_tbl(docs, tbl_number = 1)
 
 ```{r}
 tbls <- docx_extract_all_tbls(docs)
-recruitment <- do.call(what = bind_rows, args = tbls)
+recruitment <- bind_rows(tbls)
 recruitment
 ```
 
