@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.361">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Bowen Qin">
+<meta name="dcterms.date" content="2024-04-10">
+
+<title>Bowen Qin - 从pdf读取表格</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Bowen Qin</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/FangyaunLi" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com" rel="" target=""><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <div class="quarto-title-block"><div><h1 class="title">从pdf读取表格</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+                                <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Bowen Qin </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 10, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#提取pdf中数据框的常见放案" id="toc-提取pdf中数据框的常见放案" class="nav-link active" data-scroll-target="#提取pdf中数据框的常见放案"><span class="header-section-number">1</span> 提取pdf中数据框的常见放案</a>
+  <ul class="collapse">
+  <li><a href="#用docxtractr提取" id="toc-用docxtractr提取" class="nav-link" data-scroll-target="#用docxtractr提取"><span class="header-section-number">1.1</span> 用<code>docxtractr</code>提取</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(docxtractr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="提取pdf中数据框的常见放案" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> 提取pdf中数据框的常见放案</h1>
+<p>回顾用R从pdf中读取数据的常见方案及其弊端：</p>
+<ol type="1">
+<li><p><a href="https://tellingstorieswithdata.com/07-gather.html#pdfs">用<code>pdftools</code>读取文本，再整理成数据框</a>：</p>
+<ul>
+<li><p>实际上就是用正则表达式清洗文本数据，步骤比较繁琐。</p></li>
+<li><p>表格页数较多或者表格的格式较复杂的时候容易出错。</p></li>
+</ul></li>
+<li><p><a href="https://www.r-bloggers.com/2019/09/pdf-scraping-in-r-with-tabulizer/">用<code>tabulizer</code>从pdf中提取数据框</a>：</p>
+<ul>
+<li><p>需要配置java，非常麻烦。</p></li>
+<li><p>提取的结果不准确。</p></li>
+</ul></li>
+<li><p><a href="https://cran.r-project.org/web/packages/pdftables/index.html">连接pdftables调用api</a>：</p>
+<ul>
+<li>需要在网站上注册，每次使用还需要输入账号和密码。</li>
+</ul></li>
+</ol>
+<p>下面这个表格存在单元格内换行的情况，用<code>pdftools</code>根本就无从下手，用<code>tabulizer</code>或<code>pdftables</code>也容易出错。</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="071052144z0f.pdf" class="img-fluid" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="用docxtractr提取" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="用docxtractr提取"><span class="header-section-number">1.1</span> 用<code>docxtractr</code>提取</h2>
+<p>我发现了一个包<a href="https://gitlab.com/hrbrmstr/docxtractr"><code>doxtractr</code></a>可以很轻松的提取word中的数据，对于一些格式复杂的pdf可以转换成word，然后用<code>doxtractr</code>包读取数据。</p>
+<p>为什么pdf转换成word后就能准确提取表格了呢？我猜测这是因为pdf是一种矢量结构，不具备并不会用code注明哪些元素是表格哪些元素是文字，pdf中的元素只有位置的区别而没有属性的区别。而word会标明哪些元素是表格，就像在编程里声明了表格这种class，因此容易提取。</p>
+<p>将pdf用word打开并另存为word后，用<code>docxtratr</code>包的<code>read_docx()</code>读入</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>docs <span class="ot">&lt;-</span> <span class="fu">read_docx</span>(<span class="st">"071052144z0f.docx"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>docs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Word document [071052144z0f.docx]
+
+Table 1
+  total cells: 88
+  row count  : 8
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 2
+  total cells: 88
+  row count  : 8
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 3
+  total cells: 88
+  row count  : 8
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 4
+  total cells: 88
+  row count  : 8
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 5
+  total cells: 88
+  row count  : 8
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 6
+  total cells: 88
+  row count  : 8
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 7
+  total cells: 77
+  row count  : 7
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 8
+  total cells: 77
+  row count  : 7
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 9
+  total cells: 77
+  row count  : 7
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 10
+  total cells: 77
+  row count  : 7
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 11
+  total cells: 77
+  row count  : 7
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 12
+  total cells: 77
+  row count  : 7
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 13
+  total cells: 77
+  row count  : 7
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 14
+  total cells: 77
+  row count  : 7
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 15
+  total cells: 77
+  row count  : 7
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 16
+  total cells: 77
+  row count  : 7
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 17
+  total cells: 77
+  row count  : 7
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 18
+  total cells: 77
+  row count  : 7
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 19
+  total cells: 77
+  row count  : 7
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 20
+  total cells: 77
+  row count  : 7
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 21
+  total cells: 77
+  row count  : 7
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 22
+  total cells: 77
+  row count  : 7
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 23
+  total cells: 77
+  row count  : 7
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 24
+  total cells: 77
+  row count  : 7
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 25
+  total cells: 77
+  row count  : 7
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 26
+  total cells: 77
+  row count  : 7
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]
+
+Table 27
+  total cells: 33
+  row count  : 3
+  uniform    : likely!
+  has header : likely! =&gt; possibly [用人单位, 具体单位, 岗位名称, 岗位简介（主要职责描述）, 岗位代码, 招聘人数, 所需专业名称, 学历学位, 政治面貌, 毕业年限, 备注]</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>No comments in document</code></pre>
+</div>
+</div>
+<p>可以看到文档中的表格被自动识别，并且推断出的表格的表头都是正确的。</p>
+<p>使用<code>docx_extract_tbl()</code>提取表格</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">docx_extract_tbl</span>(docs, <span class="at">tbl_number =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7 × 11
+  用人单位            具体单位 岗位名称 岗位简介.主要职责描述. 岗位代码 招聘人数
+  &lt;chr&gt;               &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;                  &lt;chr&gt;    &lt;chr&gt;   
+1 河南省烟草专卖局（… 内设机构 经济运…  负责经济运行管理等工…  10101    1       
+2 河南省烟草专卖局（… 内设机构 科技项…  负责科技项目管理等工…  10102    1       
+3 河南省烟草专卖局（… 内设机构 企业法…  负责法治建设等工作。   10103    1       
+4 河南省烟草专卖局（… 内设机构 资金管…  负责会计核算工作；负…  10104    1       
+5 河南省烟草专卖局（… 内设机构 营销管…  负责卷烟营销数据采集…  10105    1       
+6 河南省烟草专卖局（… 内设机构 营销管…  负责卷烟营销数据采集…  10106    1       
+7 河南省烟草专卖局（… 内设机构 综合管…  负责行政后勤管理等工…  10107    1       
+# ℹ 5 more variables: 所需专业名称 &lt;chr&gt;, 学历学位 &lt;chr&gt;, 政治面貌 &lt;chr&gt;,
+#   毕业年限 &lt;chr&gt;, 备注 &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>这里我们的pdf有27页，每页的表格都是固定的表头，可以用<code>docx_extract_all_tbls()</code>提取全部表格再按行合并。</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>tbls <span class="ot">&lt;-</span> <span class="fu">docx_extract_all_tbls</span>(docs)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>recruitment <span class="ot">&lt;-</span> <span class="fu">do.call</span>(<span class="at">what =</span> bind_rows, <span class="at">args =</span> tbls)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>recruitment</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 164 × 11
+   用人单位          具体单位 岗位名称  岗位简介.主要职责描述. 岗位代码 招聘人数
+   &lt;chr&gt;             &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;                  &lt;chr&gt;    &lt;chr&gt;   
+ 1 河南省烟草专卖局… 内设机构 经济运行… 负责经济运行管理等工…  10101    1       
+ 2 河南省烟草专卖局… 内设机构 科技项目… 负责科技项目管理等工…  10102    1       
+ 3 河南省烟草专卖局… 内设机构 企业法律… 负责法治建设等工作。   10103    1       
+ 4 河南省烟草专卖局… 内设机构 资金管理… 负责会计核算工作；负…  10104    1       
+ 5 河南省烟草专卖局… 内设机构 营销管理… 负责卷烟营销数据采集…  10105    1       
+ 6 河南省烟草专卖局… 内设机构 营销管理… 负责卷烟营销数据采集…  10106    1       
+ 7 河南省烟草专卖局… 内设机构 综合管理… 负责行政后勤管理等工…  10107    1       
+ 8 河南省烟草专卖局… 内设机构 网络安全… 负责网络和信息安全等…  10108    1       
+ 9 河南省烟草专卖局… 内设机构 质量监督… 负责烟草制品质量监督…  10109    1       
+10 中国烟草河南进出… 内设机构 会计（审… 负责会计核算工作；负…  10110    1       
+# ℹ 154 more rows
+# ℹ 5 more variables: 所需专业名称 &lt;chr&gt;, 学历学位 &lt;chr&gt;, 政治面貌 &lt;chr&gt;,
+#   毕业年限 &lt;chr&gt;, 备注 &lt;chr&gt;</code></pre>
+</div>
+</div>
+
+
+<!-- -->
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="FangyaunLi/My-Blog" data-repo-id="R_kgDOLZCLjA" data-category="General" data-category-id="" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb9" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> 从pdf读取表格</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2024-04-10"</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span><span class="co"> [R]</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(docxtractr)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="fu"># 提取pdf中数据框的常见放案</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>回顾用R从pdf中读取数据的常见方案及其弊端：</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span><span class="co">[</span><span class="ot">用`pdftools`读取文本，再整理成数据框</span><span class="co">](https://tellingstorieswithdata.com/07-gather.html#pdfs)</span>：</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>实际上就是用正则表达式清洗文本数据，步骤比较繁琐。</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>表格页数较多或者表格的格式较复杂的时候容易出错。</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span><span class="co">[</span><span class="ot">用`tabulizer`从pdf中提取数据框</span><span class="co">](https://www.r-bloggers.com/2019/09/pdf-scraping-in-r-with-tabulizer/)</span>：</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>需要配置java，非常麻烦。</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>提取的结果不准确。</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span><span class="co">[</span><span class="ot">连接pdftables调用api</span><span class="co">](https://cran.r-project.org/web/packages/pdftables/index.html)</span>：</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>需要在网站上注册，每次使用还需要输入账号和密码。</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>下面这个表格存在单元格内换行的情况，用<span class="in">`pdftools`</span>根本就无从下手，用<span class="in">`tabulizer`</span>或<span class="in">`pdftables`</span>也容易出错。</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: 100%</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"071052144z0f.pdf"</span>)</span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a><span class="fu">## 用`docxtractr`提取</span></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>我发现了一个包<span class="co">[</span><span class="ot">`doxtractr`</span><span class="co">](https://gitlab.com/hrbrmstr/docxtractr)</span>可以很轻松的提取word中的数据，对于一些格式复杂的pdf可以转换成word，然后用<span class="in">`doxtractr`</span>包读取数据。</span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>为什么pdf转换成word后就能准确提取表格了呢？我猜测这是因为pdf是一种矢量结构，不具备并不会用code注明哪些元素是表格哪些元素是文字，pdf中的元素只有位置的区别而没有属性的区别。而word会标明哪些元素是表格，就像在编程里声明了表格这种class，因此容易提取。</span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>将pdf用word打开并另存为word后，用<span class="in">`docxtratr`</span>包的<span class="in">`read_docx()`</span>读入</span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>docs <span class="ot">&lt;-</span> <span class="fu">read_docx</span>(<span class="st">"071052144z0f.docx"</span>)</span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>docs</span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a>可以看到文档中的表格被自动识别，并且推断出的表格的表头都是正确的。</span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a>使用<span class="in">`docx_extract_tbl()`</span>提取表格</span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a><span class="fu">docx_extract_tbl</span>(docs, <span class="at">tbl_number =</span> <span class="dv">1</span>)</span>
+<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a>这里我们的pdf有27页，每页的表格都是固定的表头，可以用<span class="in">`docx_extract_all_tbls()`</span>提取全部表格再按行合并。</span>
+<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-83"><a href="#cb9-83" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-84"><a href="#cb9-84" aria-hidden="true" tabindex="-1"></a>tbls <span class="ot">&lt;-</span> <span class="fu">docx_extract_all_tbls</span>(docs)</span>
+<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a>recruitment <span class="ot">&lt;-</span> <span class="fu">do.call</span>(<span class="at">what =</span> bind_rows, <span class="at">args =</span> tbls)</span>
+<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a>recruitment</span>
+<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+</body></html>

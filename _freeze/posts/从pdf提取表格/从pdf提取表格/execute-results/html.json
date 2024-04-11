@@ -1,0 +1,14 @@
+{
+  "hash": "62c92ae9c82f1313cfc9488ab805c403",
+  "result": {
+    "markdown": "---\ntitle: 从pdf提取表格\ndate: \"2024-04-10\"\ncategories: [R]\n---\n\n::: {.cell layout-align=\"center\"}\n\n```{.r .cell-code}\nlibrary(tidyverse)\nlibrary(pdftools)\n```\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
