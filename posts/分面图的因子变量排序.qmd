@@ -99,7 +99,8 @@ exm_data %>%
   geom_pointrange(aes(ymin = 0, ymax = y), show.legend = FALSE) +
   facet_wrap(~ z, scales = "free_y") +
   scale_x_reordered() +
-  coord_flip()
+  coord_flip() +
+  scale_color_brewer(palette = "Dark2")
 ```
 
 这个方法的本质是先将因子变量和用于分面的变量合并成一个新的因子变量，再对这个新的因子变量进行排序。

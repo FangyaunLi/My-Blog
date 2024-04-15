@@ -209,7 +209,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="文档词频_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="分面图的因子变量排序_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption class="figure-caption">排序前</figcaption>
 </figure>
 </div>
@@ -217,7 +217,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="文档词频_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="分面图的因子变量排序_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid figure-img" width="672"></p>
 <figcaption class="figure-caption">排序后</figcaption>
 </figure>
 </div>
@@ -238,16 +238,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 10 × 3
    x         y z     
    &lt;chr&gt; &lt;int&gt; &lt;chr&gt; 
- 1 A         4 group1
- 2 B         3 group1
+ 1 A        10 group1
+ 2 B         1 group1
  3 C         2 group1
- 4 D         1 group1
- 5 E        10 group1
- 6 A         7 group2
- 7 B         5 group2
- 8 C         9 group2
- 9 D         6 group2
-10 E         8 group2</code></pre>
+ 4 D         3 group1
+ 5 E         5 group1
+ 6 A         9 group2
+ 7 B         6 group2
+ 8 C         8 group2
+ 9 D         4 group2
+10 E         7 group2</code></pre>
 </div>
 </div>
 <div class="cell" data-layout-align="center">
@@ -262,7 +262,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="文档词频_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="分面图的因子变量排序_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -311,11 +311,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointrange</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> y), <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> z, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_reordered</span>() <span class="sc">+</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Dark2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="文档词频_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="分面图的因子变量排序_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -328,16 +329,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 10 × 3
    x              y z     
    &lt;fct&gt;      &lt;int&gt; &lt;chr&gt; 
- 1 A___group1     4 group1
- 2 B___group1     3 group1
+ 1 A___group1    10 group1
+ 2 B___group1     1 group1
  3 C___group1     2 group1
- 4 D___group1     1 group1
- 5 E___group1    10 group1
- 6 A___group2     7 group2
- 7 B___group2     5 group2
- 8 C___group2     9 group2
- 9 D___group2     6 group2
-10 E___group2     8 group2</code></pre>
+ 4 D___group1     3 group1
+ 5 E___group1     5 group1
+ 6 A___group2     9 group2
+ 7 B___group2     6 group2
+ 8 C___group2     8 group2
+ 9 D___group2     4 group2
+10 E___group2     7 group2</code></pre>
 </div>
 </div>
 <p>相当于</p>
@@ -349,16 +350,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 10 × 3
    x             y z     
    &lt;fct&gt;     &lt;int&gt; &lt;chr&gt; 
- 1 A__group1     4 group1
- 2 B__group1     3 group1
+ 1 A__group1    10 group1
+ 2 B__group1     1 group1
  3 C__group1     2 group1
- 4 D__group1     1 group1
- 5 E__group1    10 group1
- 6 A__group2     7 group2
- 7 B__group2     5 group2
- 8 C__group2     9 group2
- 9 D__group2     6 group2
-10 E__group2     8 group2</code></pre>
+ 4 D__group1     3 group1
+ 5 E__group1     5 group1
+ 6 A__group2     9 group2
+ 7 B__group2     6 group2
+ 8 C__group2     8 group2
+ 9 D__group2     4 group2
+10 E__group2     7 group2</code></pre>
 </div>
 </div>
 <p>总之,在绘制包含分面的图形时,如果需要对不同分面内的因子变量进行排序,可以使用<code>tidytext</code>包提供的<code>reorder_within()</code>和<code>scale_*_reordered()</code>函数,它们可以帮助我们轻松实现分组内的因子变量排序。</p>
@@ -870,26 +871,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb15-113"><a href="#cb15-113" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointrange</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> y), <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
 <span id="cb15-114"><a href="#cb15-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> z, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
 <span id="cb15-115"><a href="#cb15-115" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_reordered</span>() <span class="sc">+</span></span>
-<span id="cb15-116"><a href="#cb15-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()</span>
-<span id="cb15-117"><a href="#cb15-117" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-118"><a href="#cb15-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-119"><a href="#cb15-119" aria-hidden="true" tabindex="-1"></a>这个方法的本质是先将因子变量和用于分面的变量合并成一个新的因子变量，再对这个新的因子变量进行排序。</span>
-<span id="cb15-120"><a href="#cb15-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-123"><a href="#cb15-123" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-124"><a href="#cb15-124" aria-hidden="true" tabindex="-1"></a>exm_data <span class="sc">%&gt;%</span> </span>
-<span id="cb15-125"><a href="#cb15-125" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">x =</span> <span class="fu">reorder_within</span>(x, <span class="at">by =</span> y, <span class="at">within =</span> z))</span>
-<span id="cb15-126"><a href="#cb15-126" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-127"><a href="#cb15-127" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-128"><a href="#cb15-128" aria-hidden="true" tabindex="-1"></a>相当于</span>
-<span id="cb15-129"><a href="#cb15-129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-132"><a href="#cb15-132" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb15-133"><a href="#cb15-133" aria-hidden="true" tabindex="-1"></a>exm_data <span class="sc">%&gt;%</span> </span>
-<span id="cb15-134"><a href="#cb15-134" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">x =</span> <span class="fu">str_c</span>(x, z, <span class="at">sep =</span> <span class="st">"__"</span>),</span>
-<span id="cb15-135"><a href="#cb15-135" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> <span class="fu">fct_reorder</span>(x, y))</span>
-<span id="cb15-136"><a href="#cb15-136" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb15-137"><a href="#cb15-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-116"><a href="#cb15-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb15-117"><a href="#cb15-117" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Dark2"</span>)</span>
+<span id="cb15-118"><a href="#cb15-118" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-119"><a href="#cb15-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-120"><a href="#cb15-120" aria-hidden="true" tabindex="-1"></a>这个方法的本质是先将因子变量和用于分面的变量合并成一个新的因子变量，再对这个新的因子变量进行排序。</span>
+<span id="cb15-121"><a href="#cb15-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-124"><a href="#cb15-124" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-125"><a href="#cb15-125" aria-hidden="true" tabindex="-1"></a>exm_data <span class="sc">%&gt;%</span> </span>
+<span id="cb15-126"><a href="#cb15-126" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">x =</span> <span class="fu">reorder_within</span>(x, <span class="at">by =</span> y, <span class="at">within =</span> z))</span>
+<span id="cb15-127"><a href="#cb15-127" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-128"><a href="#cb15-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-129"><a href="#cb15-129" aria-hidden="true" tabindex="-1"></a>相当于</span>
+<span id="cb15-130"><a href="#cb15-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-133"><a href="#cb15-133" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-134"><a href="#cb15-134" aria-hidden="true" tabindex="-1"></a>exm_data <span class="sc">%&gt;%</span> </span>
+<span id="cb15-135"><a href="#cb15-135" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">x =</span> <span class="fu">str_c</span>(x, z, <span class="at">sep =</span> <span class="st">"__"</span>),</span>
+<span id="cb15-136"><a href="#cb15-136" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> <span class="fu">fct_reorder</span>(x, y))</span>
+<span id="cb15-137"><a href="#cb15-137" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb15-138"><a href="#cb15-138" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-139"><a href="#cb15-139" aria-hidden="true" tabindex="-1"></a>总之,在绘制包含分面的图形时,如果需要对不同分面内的因子变量进行排序,可以使用<span class="in">`tidytext`</span>包提供的<span class="in">`reorder_within()`</span>和<span class="in">`scale_*_reordered()`</span>函数,它们可以帮助我们轻松实现分组内的因子变量排序。</span>
+<span id="cb15-139"><a href="#cb15-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-140"><a href="#cb15-140" aria-hidden="true" tabindex="-1"></a>总之,在绘制包含分面的图形时,如果需要对不同分面内的因子变量进行排序,可以使用<span class="in">`tidytext`</span>包提供的<span class="in">`reorder_within()`</span>和<span class="in">`scale_*_reordered()`</span>函数,它们可以帮助我们轻松实现分组内的因子变量排序。</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
