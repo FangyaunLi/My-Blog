@@ -1,5 +1,6 @@
 ---
 title: 分面图的因子变量排序
+date: "2024-04-15"
 categories: [R, text data]
 ---
 
